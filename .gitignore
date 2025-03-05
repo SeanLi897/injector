@@ -1,0 +1,45 @@
+# STM32CubeIDE 项目.gitignore模板
+
+# --- IDE相关文件 ---
+.project
+.cproject
+.settings/
+.mxproject
+.metadata/
+*.launch
+.recommenders/
+
+# --- 构建输出目录 ---
+Debug/
+Release/
+build/
+
+# --- 编译中间文件 ---
+*.o
+*.d
+*.dep
+*.su
+
+# --- 可执行与固件文件 ---
+*.elf
+*.bin
+*.hex
+*.map
+*.lst
+*.axf
+
+# --- 调试与临时文件 ---
+*.jdebug
+*.log
+*.tmp
+*.bak
+*.swp
+
+# --- CubeMX用户配置 ---
+*.ioc.user
+/Core/Inc/stm32*.h
+/Core/Src/stm32*.c
+
+# --- 其他通用忽略项 ---
+.idea/
+.vscode/
