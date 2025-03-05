@@ -1,0 +1,15 @@
+../Core/Src/motor.c:11:6:Motor_Forward.part.0	8	static
+../Core/Src/motor.c:23:6:Motor_Reverse.part.0	8	static
+../Core/Src/motor.c:34:6:Motor_Brake.part.0	8	static
+../Core/Src/motor.c:11:6:Motor_Forward	8	static
+../Core/Src/motor.c:23:6:Motor_Reverse	8	static
+../Core/Src/motor.c:34:6:Motor_Brake	8	static
+../Core/Src/motor.c:3:6:Motor_init	8	static
+../Core/Src/motor.c:73:6:PAUSE_chk	24	static
+../Core/Src/motor.c:154:6:motor_Forward_Cycle	24	static
+../Core/Src/motor.c:164:6:motor_Forward_Cycle_tegether	16	static
+../Core/Src/motor.c:176:6:motor_Reverse_Cycle_together	8	static
+../Core/Src/motor.c:45:6:Ex_GAS_Cycle	8	static
+../Core/Src/motor.c:186:6:motor_Reverse_Cycle	8	static
+../Core/Src/motor.c:194:6:Inject_times	8	static
+../Core/Src/motor.c:214:6:Inject_working	8	static

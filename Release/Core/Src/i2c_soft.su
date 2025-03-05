@@ -1,0 +1,10 @@
+../Core/Src/i2c_soft.c:8:6:I2C_Delay	0	static
+../Core/Src/i2c_soft.c:19:6:I2C_Start	8	static
+../Core/Src/i2c_soft.c:35:6:I2C_Stop	8	static
+../Core/Src/i2c_soft.c:50:6:I2C_Ack	8	static
+../Core/Src/i2c_soft.c:66:6:I2C_NAck	8	static
+../Core/Src/i2c_soft.c:82:9:I2C_WaitAck	16	static
+../Core/Src/i2c_soft.c:106:6:I2C_SendByte	16	static
+../Core/Src/i2c_soft.c:129:9:I2C_ReadByte	16	static
+../Core/Src/i2c_soft.c:152:9:I2C_WriteData	16	static
+../Core/Src/i2c_soft.c:178:9:I2C_ReadData	24	static

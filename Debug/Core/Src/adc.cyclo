@@ -1,0 +1,4 @@
+../Core/Src/adc.c:32:6:MX_ADC1_Init	6
+../Core/Src/adc.c:101:6:HAL_ADC_MspInit	3
+../Core/Src/adc.c:155:6:HAL_ADC_MspDeInit	2
+../Core/Src/adc.c:189:6:HAL_ADC_ConvCpltCallback	4

@@ -1,0 +1,3 @@
+../Core/Src/dosage.c:10:6:Set_Dosage	16	static
+../Core/Src/dosage.c:60:6:Refresh_counter	24	static
+../Core/Src/dosage.c:77:6:Refresh_Dosage	8	static

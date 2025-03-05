@@ -1,0 +1,12 @@
+../Core/Src/motor.c:23:6:Motor_Forward	1
+../Core/Src/motor.c:30:6:Motor_Reverse	1
+../Core/Src/motor.c:37:6:Motor_Brake	1
+../Core/Src/motor.c:17:6:Motor_init	1
+../Core/Src/motor.c:54:6:PAUSE_chk	11
+../Core/Src/motor.c:96:6:motor_Forward_Cycle	2
+../Core/Src/motor.c:113:6:motor_Reverse_Cycle	2
+../Core/Src/motor.c:44:6:Ex_GAS_Cycle	2
+../Core/Src/motor.c:121:6:Inject_times	1
+../Core/Src/motor.c:128:6:Pump_work	2
+../Core/Src/motor.c:136:6:Inject_working	5
+../Core/Src/motor.c:191:7:Motor_CRT_CLC	1

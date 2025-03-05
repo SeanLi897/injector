@@ -1,0 +1,2 @@
+../Core/Src/key.c:4:9:key_scan	8	static
+../Core/Src/key.c:21:6:deal_key	0	static

@@ -1,0 +1,2 @@
+../Core/Src/gas_press_clc.c:9:7:GasPrs_CLC	8	static
+../Core/Src/gas_press_clc.c:15:6:refresh_gasPrs	8	static
