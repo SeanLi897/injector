@@ -33,6 +33,7 @@ extern uint8_t first_display_dir;
 extern uint8_t current_focus_line;// 当前焦点行0-5
 extern uint8_t last_focus_line;
 extern uint8_t focus_key_pressed;
+extern enum HMI_PAGE page_location;
 
 void HMI_init(void);
 //void Display_File_List(void);

@@ -12,6 +12,9 @@ extern uint8_t start_pressed;
 extern uint8_t pause_pressed;
 extern uint8_t nReset_pressed;
 extern uint8_t EX_GAS_pressed;
+extern uint8_t del_file_pressed;
+extern uint8_t confirm_del_pressed;
+extern enum KEY_VAL key_code;
 
 extern uint8_t clear_counter;
 extern uint8_t cancel_break;
@@ -25,6 +28,8 @@ extern uint8_t key_value_Refresh;
 extern uint8_t key_scan_lock;
 extern uint32_t key_lock_time;
 extern uint8_t waiting_start;
+
+
 //定义按键键值
 #define DECREASE_KEY_PRESS 1
 #define CONFIRM_KEY_PRESS 2

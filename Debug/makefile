@@ -60,8 +60,8 @@ all: main-build
 main-build: STM32.elf secondary-outputs
 
 # 工具调用
-STM32.elf STM32.map: $(OBJS) $(USER_OBJS) G:\Design_folder\injector\CODE\STM32\STM32F103C8TX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "STM32.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m3 -T"G:\Design_folder\injector\CODE\STM32\STM32F103C8TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="STM32.map" -Wl,--gc-sections -static -Wl,--no-warn-execstack -Wl,--no-warn-rwx-segments --specs=nano.specs -mfloat-abi=soft -mthumb -u _printf_float -u _scanf_float -Wl,--start-group -lc -lm -Wl,--end-group
+STM32.elf STM32.map: $(OBJS) $(USER_OBJS) G:\Design_folder\SeanLi897\injector\STM32F103C8TX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "STM32.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m3 -T"G:\Design_folder\SeanLi897\injector\STM32F103C8TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="STM32.map" -Wl,--gc-sections -static -Wl,--no-warn-execstack -Wl,--no-warn-rwx-segments --specs=nano.specs -mfloat-abi=soft -mthumb -u _printf_float -u _scanf_float -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo '已结束构建目标： $@'
 	@echo ' '
 

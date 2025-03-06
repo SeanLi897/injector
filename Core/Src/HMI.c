@@ -7,6 +7,9 @@ uint8_t last_focus_line = 0;
 PagingState paging = {0};
 uint8_t focus_key_pressed = 0;
 
+enum HMI_PAGE {Main_page,File_M_page};
+enum HMI_PAGE page_location;
+
 void HMI_init(void){
   refresh_bat_vlt();
 
@@ -41,65 +44,6 @@ void Clear_HMI_Item(uint8_t index) {
     sprintf(Tx_Buffer, "File_M.t%d.txt=\"\"\xff\xff\xff", index);
     USART1_Tx_HMIdata((uint8_t*)Tx_Buffer);
 }
-
-//void Display_File_List(void){
-//  FATFS fs;
-//  DIR dir;
-//  FILINFO fno;
-//  FRESULT res;
-//
-//  uint8_t item_count = 0;
-//  char sixth_filename[FF_MAX_LFN] = {0}; // 存储第六个文件名
-//  uint8_t overflow_flag = 0;             // 溢出标志
-//
-//  /* 打开根目录 */
-//  res = f_opendir(&dir, "/");
-//  if (res != FR_OK) {
-//      printf("打开目录失败！错误码：%d\n", res);
-//      return;
-//  }
-//
-//  // 遍历目录
-//     for (;;) {
-//         res = f_readdir(&dir, &fno);
-//         if (res != FR_OK || fno.fname[0] == 0) break;
-//
-//         // 跳过目录
-//         if (fno.fattrib & AM_DIR) continue;
-//
-//         // 前5个正常显示
-//         if (item_count < 5) {
-//             Send_To_HMI(item_count, fno.fname);
-//             item_count++;
-//         }
-//         // 捕获第六个文件名
-//         else if (item_count == 5) {
-//             strncpy(sixth_filename, fno.fname, sizeof(sixth_filename)-1);
-//             item_count++;
-//         }
-//         // 检测超过6个文件
-//         else {
-//             overflow_flag = 1;
-//             break;
-//         }
-//     }
-//
-//     // 处理第六个显示位
-//     if (item_count > 5) {
-//         overflow_flag ? Send_To_HMI(5, "...") :  Send_To_HMI(5, sixth_filename);
-//     } else {
-//         Clear_HMI_Item(5);
-//     }
-//
-//     // 清空未使用的显示位
-//     for (uint8_t i = item_count; i < 5; i++) {
-//         Clear_HMI_Item(i);
-//     }
-//
-//     // 关闭目录
-//     f_closedir(&dir);
-//     dir_display_refresh = 1;
-//}
 
 void Refresh_Display() {
     // 计算显示标志
@@ -176,6 +120,7 @@ void Cache_File_List() {
 }
 
 void On_Key_Pressed() {
+
 		// 在翻页操作前范围检查
 		if(paging.start_index < 0) paging.start_index = 0;
 		if(paging.start_index >= paging.file_count)
@@ -196,6 +141,60 @@ void On_Key_Pressed() {
             Refresh_Display();
         }
     }
+
+}
+
+FRESULT delete_file(const char* path) {
+    FRESULT res;
+
+    // 检查文件是否存在
+    FILINFO fno;
+    if((res = f_stat(path, &fno)) != FR_OK) {
+        return res; // 返回错误码：FR_NO_FILE等
+    }
+
+    // 执行删除
+    if((res = f_unlink(path)) != FR_OK) {
+        return res; // 返回错误码：FR_DENIED（写保护）等
+    }
+
+    return FR_OK;
+}
+
+void On_Delete_Key_Pressed() {
+		// 计算实际文件索引（需考虑分页提示符）
+		uint16_t actual_index = paging.start_index + current_focus_line;
+		if(paging.show_prev_more) actual_index -= 1; // 排除"..."行
+
+		// 构造完整路径
+		char full_path[FF_MAX_LFN + 3] = "0:/";
+		strcat(full_path, paging.file_list[actual_index]);
+
+		FIL fp;
+		if(f_open(&fp, full_path, FA_READ) == FR_OK) {
+		    f_close(&fp); // 确保文件未被占用
+		}
+		// 执行删除
+		FRESULT res = delete_file(full_path);
+
+		// 在删除成功后更新缓存前释放旧内存
+		if(paging.file_list != NULL) {
+		    for(uint16_t i=0; i<paging.file_count; i++)
+		        free(paging.file_list[i]);
+		    free(paging.file_list);
+		}
+
+		// 处理结果
+		if(res == FR_OK) {
+				// 更新文件列表缓存
+				Cache_File_List();
+				Refresh_Display();
+				// HMI提示
+				sprintf(Tx_Buffer, "Main.t0.txt=\"删除成功\"\xff\xff\xff");
+		} else {
+				sprintf(Tx_Buffer, "Main.t0.txt=\"错误:%d\"\xff\xff\xff", res);
+		}
+		USART1_Tx_HMIdata((uint8_t*)Tx_Buffer);
 }
 
 void scroll_focus_line(void){

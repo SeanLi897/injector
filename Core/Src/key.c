@@ -9,13 +9,17 @@ uint8_t pause_pressed = 0;
 uint8_t clear_counter = 0;
 uint8_t cancel_break = 0;
 uint8_t EX_GAS_pressed = 0;
-
+uint8_t del_file_pressed = 0;//
+uint8_t confirm_del_pressed = 0;
 uint8_t key_value = 0;
 uint8_t key_value_Refresh = 0;
 uint8_t key_press_long = 0;
 uint8_t key_press_sigle = 0;
 uint8_t key_pressed = 0;
 volatile uint16_t key_press_time = 0;
+
+enum KEY_VAL {KEY_NULL,KEY_DELETE,KEY_CONFIRM,KEY_CANCEL};
+enum KEY_VAL key_code;
 
 //在按键中断中调用
 uint8_t key_scan(){
@@ -43,7 +47,7 @@ void deal_key(){
 		switch(key_value){//检测按键值
 			case DECREASE_KEY_PRESS://减小
 			{
-			if(Main_page_state){
+			if(page_location == Main_page){
 				if(!waiting_start && !Injecting){//不处于已按确认等待按开始键状态
 					if(Dosage_set > 1000)
 						Dosage_set = 0;
@@ -53,7 +57,7 @@ void deal_key(){
 				}
 			}
 			else
-			if(File_manage_state){
+			if(page_location == File_M_page){
 				last_focus_line = current_focus_line;
 				if(current_focus_line > 0){
 					current_focus_line--;
@@ -66,7 +70,7 @@ void deal_key(){
 
 			case CONFIRM_KEY_PRESS://确认
 			{
-				if(Main_page_state){
+				if(page_location == Main_page){
 					if(!Injecting && (Dosage_set != 0)){
 						Dosage_load = Dosage_set;
 						confirm_time = now_time;
@@ -88,14 +92,14 @@ void deal_key(){
 					}
 				}
 				else
-				if(File_manage_state){
+				if(page_location == File_M_page){
 					focus_key_pressed = 1;
 				}
 			}break;
 
 			case INCREASE_KEY_PRESS://增加
 			{
-			if(Main_page_state){
+			if(page_location == Main_page){
 				if(!waiting_start && !Injecting){
 					if(Dosage_set < 1000)
 						Dosage_set+=2;
@@ -105,7 +109,7 @@ void deal_key(){
 				}
 			}
 			else
-			if(File_manage_state){
+			if(page_location == File_M_page){
 				last_focus_line = current_focus_line;
 				if(current_focus_line < 5){
 					current_focus_line++;
@@ -118,29 +122,29 @@ void deal_key(){
 
 			case Q_SET_KEY_PRESS://快设
 			{
-			if(Main_page_state){
+			if(page_location == Main_page){
 				read_i2c = 1;
 			}
 			else
-			if(File_manage_state){
-
+			if(page_location == File_M_page){
+				qset_pressed = 1;
 			}
 			}break;
 
 			case EX_GAS_KEY_PRESS://排气
 			{
-			if(Main_page_state){
+			if(page_location == Main_page){
 				EX_GAS_pressed = 1;
 			}
 			else
-			if(File_manage_state){
+			if(page_location == File_M_page){
 
 			}
 			}break;
 
 			case START_KEY_PRESS://开始
 			{
-			if(Main_page_state){
+			if(page_location == Main_page){
 				if(waiting_start && (Dosage_load > 0) && !Injecting){
 					start_pressed = 1;
 					Dosage_set = 0;
@@ -163,18 +167,18 @@ void deal_key(){
 				}
 			}
 			else
-			if(File_manage_state){
+			if(page_location == File_M_page){
 
 			}
 			}break;
 
 			case NRESET_KEY_PRESS://复位键
 			{
-				if(Main_page_state == 1){
+				if(page_location == Main_page){
 					nReset_pressed = 1;
 				}
 				else
-				if(File_manage_state == 1){
+				if(page_location == File_M_page){
 					File_manage_state =0;
 					Main_page_state = 1;
 					sprintf(Tx_Buffer,"page Main\xff\xff\xff");
@@ -193,7 +197,7 @@ void deal_key(){
 
 			case PAUSE_KEY_PRESS://暂停
 			{
-			if(Main_page_state == 1){
+			if(page_location == Main_page){
 				pause_pressed = 1;
 				if(Injecting && !pause_state){
 					pause_state = 1;
@@ -203,7 +207,7 @@ void deal_key(){
 				}
 			}
 			else
-			if(File_manage_state == 1){
+			if(page_location == File_M_page){
 
 			}
 			}break;

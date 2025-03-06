@@ -131,8 +131,9 @@ int main(void)
 	AD24C02_DataCheck();
 	HAL_Delay(10);
 
-	Main_page_state = 1;
-	File_manage_state = 0;
+//	Main_page_state = 1;
+	page_location = Main_page;
+//	File_manage_state = 0;
 
 //	sprintf(Tx_Buffer,"Main.t0.txt=\"\"\xff\xff\xff");
 //	USART1_Tx_HMIdata((uint8_t*)Tx_Buffer);
@@ -186,7 +187,7 @@ int main(void)
 //  	USART2_Tx_BLEdata(Tx_Buffer);
 //  	HAL_Delay(1000);
 
-  	if(Injecting && Main_page_state){
+  	if(Injecting && (page_location == Main_page)){
 			sprintf(Tx_Buffer,"Main.t0.txt=\"正在注药\"\xff\xff\xff");
 			USART1_Tx_HMIdata((uint8_t*)Tx_Buffer);
 
@@ -197,12 +198,12 @@ int main(void)
 			Inject_working();
 		}
 		else
-		if(!Injecting && EX_GAS_start && Main_page_state){
+		if(!Injecting && EX_GAS_start && (page_location == Main_page)){
 				while(!Injecting && EX_GAS_start)
 					Ex_GAS_Cycle();
 		}
 		else
-		if(!Injecting && File_manage_state){
+		if(!Injecting && (page_location == File_M_page)){
 			if(refresh_dir || first_display_dir){
 				Cache_File_List();
 				Refresh_Display();
@@ -222,12 +223,12 @@ int main(void)
 			}
 		}
 		else
-		if(Main_page_state)
+		if(page_location == Main_page)
 		{
 			Set_Dosage();
 		}
 
-		if(clear_counter && Main_page_state){
+		if(clear_counter && (page_location == Main_page)){
 			clear_counter = 0;
 			Refresh_Dosage();
 			HAL_GPIO_WritePin(LED_R_GPIO_Port, LED_R_Pin,GPIO_PIN_SET);
