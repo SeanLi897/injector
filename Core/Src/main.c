@@ -131,20 +131,9 @@ int main(void)
 	AD24C02_DataCheck();
 	HAL_Delay(10);
 
-//	Main_page_state = 1;
 	page_location = Main_page;
-//	File_manage_state = 0;
-
-//	sprintf(Tx_Buffer,"Main.t0.txt=\"\"\xff\xff\xff");
-//	USART1_Tx_HMIdata((uint8_t*)Tx_Buffer);
-//
-//	sprintf(Tx_Buffer,"Main.t8.txt=\"\"\xff\xff\xff");
-//	USART1_Tx_HMIdata((uint8_t*)Tx_Buffer);
-//
   HAL_UART_Receive_DMA(&huart3, &gps_rx_buffer[0], 1); // 启动接收
-
   SDCard_states = SDCard_InsertCheck();
-
   if(SDCard_states == 0){
     CSV_sheet_Init();
   }else{
@@ -172,7 +161,6 @@ int main(void)
   	}
 
 //    HAL_Delay(1000);
-
 //  	if (uart2_idle_flag) {  // 接收到完整字符串
 //  		uart2_idle_flag = 0;
 //  	  // 回显接收到的数据
@@ -183,9 +171,9 @@ int main(void)
 //  	  memset(rx2_buffer, 0, RX_BUFFER_SIZE);
 //  	}
 //
-//  	sprintf(Tx_Buffer,"蓝牙发送测试...\r\n");
-//  	USART2_Tx_BLEdata(Tx_Buffer);
-//  	HAL_Delay(1000);
+  	sprintf(Tx_Buffer,"蓝牙发送测试...\r\n");
+  	USART2_Tx_BLEdata(Tx_Buffer);
+  	HAL_Delay(1000);
 
   	if(Injecting && (page_location == Main_page)){
 			sprintf(Tx_Buffer,"Main.t0.txt=\"正在注药\"\xff\xff\xff");
@@ -212,10 +200,28 @@ int main(void)
 				refresh_dir = 0;
 			}
 
-			if(focus_key_pressed){
-				focus_key_pressed = 0;
-				On_Key_Pressed();
+			switch(key_code){
+				case KEY_CANCEL:
+					Back_to_MainPage();
+					break;
+				case KEY_CONFIRM:
+					page_turning();
+					break;
+				case KEY_DELETE:
+					On_Delete_Key_Pressed();
+					break;
+				case KEY_SENDFILE:
+
+					break;
+				default:
+					break;
 			}
+			key_code = KEY_NULL;
+
+//			if(focus_key_pressed){
+//				focus_key_pressed = 0;
+//				On_Key_Pressed(key_code);
+//			}
 
 			if(dir_display_refresh){
 				scroll_focus_line();

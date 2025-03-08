@@ -14,7 +14,9 @@ extern uint8_t nReset_pressed;
 extern uint8_t EX_GAS_pressed;
 extern uint8_t del_file_pressed;
 extern uint8_t confirm_del_pressed;
-extern enum KEY_VAL key_code;
+
+enum KEY_VAL {KEY_NULL,KEY_CANCEL,KEY_CONFIRM,KEY_DELETE,KEY_SENDFILE};
+extern volatile enum KEY_VAL key_code;
 
 extern uint8_t clear_counter;
 extern uint8_t cancel_break;

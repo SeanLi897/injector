@@ -5,10 +5,11 @@ uint8_t first_display_dir = 1;
 uint8_t current_focus_line = 0;
 uint8_t last_focus_line = 0;
 PagingState paging = {0};
+MsgState Confirm_Msg = {0};
 uint8_t focus_key_pressed = 0;
 
-enum HMI_PAGE {Main_page,File_M_page};
 enum HMI_PAGE page_location;
+enum CONFIRM_RESAULT sec_confirm_resault;
 
 void HMI_init(void){
   refresh_bat_vlt();
@@ -43,6 +44,21 @@ void Clear_HMI_Item(uint8_t index) {
     /* 清空指定位置的显示 */
     sprintf(Tx_Buffer, "File_M.t%d.txt=\"\"\xff\xff\xff", index);
     USART1_Tx_HMIdata((uint8_t*)Tx_Buffer);
+}
+
+void Back_to_MainPage(void){
+	page_location = Main_page;
+	sprintf(Tx_Buffer,"page Main\xff\xff\xff");
+	USART1_Tx_HMIdata((uint8_t*)Tx_Buffer);
+
+	sprintf(Tx_Buffer,"Main.n2.val=%d\xff\xff\xff",total_Times);
+	USART1_Tx_HMIdata((uint8_t*)Tx_Buffer);
+
+	sprintf(Tx_Buffer,"Main.n3.val=%d\xff\xff\xff",total_inject_Dosage);
+	USART1_Tx_HMIdata((uint8_t*)Tx_Buffer);
+
+	sprintf(Tx_Buffer,"Main.n1.val=%d\xff\xff\xff",current_TreeNo);
+	USART1_Tx_HMIdata((uint8_t*)Tx_Buffer);
 }
 
 void Refresh_Display() {
@@ -87,7 +103,6 @@ void Cache_File_List() {
             free(paging.file_list[i]);
         free(paging.file_list);
     }
-
     // 第一次遍历统计数量
 //    f_mount(&fs, "0:", 1);
     f_opendir(&dir, "/");
@@ -119,29 +134,14 @@ void Cache_File_List() {
     paging.current_page = 1;
 }
 
-void On_Key_Pressed() {
-
-		// 在翻页操作前范围检查
-		if(paging.start_index < 0) paging.start_index = 0;
-		if(paging.start_index >= paging.file_count)
-				paging.start_index = paging.file_count - MAX_DISPLAY_ITEMS;
-
-    // 处理前页翻页
-    if(current_focus_line == 0 && paging.show_prev_more) {
-        paging.start_index = (paging.start_index >= (MAX_DISPLAY_ITEMS-1)) ?
-                            paging.start_index - (MAX_DISPLAY_ITEMS-1) : 0;
-        paging.current_page--;
-        Refresh_Display();
-    }
-    // 处理后页翻页
-    else if(current_focus_line == (MAX_DISPLAY_ITEMS-1) && paging.show_next_more) {
-        if(paging.start_index + MAX_DISPLAY_ITEMS < paging.file_count) {
-            paging.start_index += (MAX_DISPLAY_ITEMS-1);
-            paging.current_page++;
-            Refresh_Display();
-        }
-    }
-
+void On_Key_Pressed(uint8_t key_code) {
+	if(key_code == KEY_CONFIRM){
+		page_turning();
+	}
+	else
+	if(key_code == KEY_DELETE){
+		On_Delete_Key_Pressed();
+	}
 }
 
 FRESULT delete_file(const char* path) {
@@ -150,6 +150,7 @@ FRESULT delete_file(const char* path) {
     // 检查文件是否存在
     FILINFO fno;
     if((res = f_stat(path, &fno)) != FR_OK) {
+
         return res; // 返回错误码：FR_NO_FILE等
     }
 
@@ -161,50 +162,111 @@ FRESULT delete_file(const char* path) {
     return FR_OK;
 }
 
-void On_Delete_Key_Pressed() {
-		// 计算实际文件索引（需考虑分页提示符）
-		uint16_t actual_index = paging.start_index + current_focus_line;
-		if(paging.show_prev_more) actual_index -= 1; // 排除"..."行
+void page_turning(void){
+	// 在翻页操作前范围检查
+	if(paging.start_index < 0) paging.start_index = 0;
+	if(paging.start_index >= paging.file_count)
+			paging.start_index = paging.file_count - MAX_DISPLAY_ITEMS;
 
-		// 构造完整路径
-		char full_path[FF_MAX_LFN + 3] = "0:/";
-		strcat(full_path, paging.file_list[actual_index]);
-
-		FIL fp;
-		if(f_open(&fp, full_path, FA_READ) == FR_OK) {
-		    f_close(&fp); // 确保文件未被占用
+	// 处理前页翻页
+	if(current_focus_line == 0 && paging.show_prev_more) {
+			paging.start_index = (paging.start_index >= (MAX_DISPLAY_ITEMS-1)) ?
+													paging.start_index - (MAX_DISPLAY_ITEMS-1) : 0;
+			paging.current_page--;
+			Refresh_Display();
+	}
+	// 处理后页翻页
+	else
+	if(current_focus_line == (MAX_DISPLAY_ITEMS-1) && paging.show_next_more) {
+		if(paging.start_index + MAX_DISPLAY_ITEMS < paging.file_count) {
+				paging.start_index += (MAX_DISPLAY_ITEMS-1);
+				paging.current_page++;
+				Refresh_Display();
 		}
-		// 执行删除
-		FRESULT res = delete_file(full_path);
+	}
+}
 
+void On_Delete_Key_Pressed(){
+	if(paging.show_prev_more && current_focus_line == 0)
+		return 1;
+	else if(paging.show_prev_more && current_focus_line == 5)
+		return 1;
+
+	// 计算实际文件索引（需考虑分页提示符）
+	uint16_t actual_index = paging.start_index + current_focus_line;
+	if(paging.show_prev_more) actual_index -= 1; // 排除"..."行
+
+	// 构造完整路径
+	char full_path[FF_MAX_LFN + 3] = "0:/";
+	strcat(full_path, paging.file_list[actual_index]);
+
+	sprintf(Tx_Buffer, "File_M.t7.txt=\"确认删除%s?\"\xff\xff\xff",paging.file_list[actual_index]);
+	USART1_Tx_HMIdata((uint8_t*)Tx_Buffer);
+	Confirm_Msg.display = 1;
+	Confirm_Msg.type = CONFIRM_DELETE_FILE;
+
+	while(1){
+		if(key_code == KEY_CONFIRM){
+			key_code = KEY_NULL;
+			break;
+		}
+		if(key_code == KEY_CANCEL){
+			sprintf(Tx_Buffer, "File_M.t7.txt=\"\"\xff\xff\xff");
+			USART1_Tx_HMIdata((uint8_t*)Tx_Buffer);
+			Confirm_Msg.display = 0;
+			Confirm_Msg.type = CONFIRM_NULL;
+			key_code = KEY_NULL;
+			return;
+		}
+	}
+
+	sprintf(Tx_Buffer, "File_M.t7.txt=\"正在删除%s\"\xff\xff\xff",paging.file_list[actual_index]);
+	USART1_Tx_HMIdata((uint8_t*)Tx_Buffer);
+
+	FIL fp;
+	if(f_open(&fp, full_path, FA_READ) == FR_OK) {
+			f_close(&fp); // 确保文件未被占用
+	}
+	// 执行删除
+	FRESULT res = delete_file(full_path);
+
+	// 处理结果
+	if(res == FR_OK) {
 		// 在删除成功后更新缓存前释放旧内存
 		if(paging.file_list != NULL) {
-		    for(uint16_t i=0; i<paging.file_count; i++)
-		        free(paging.file_list[i]);
-		    free(paging.file_list);
+			for(uint16_t i=0; i<paging.file_count; i++)
+					free(paging.file_list[i]);
+			free(paging.file_list);
 		}
+			// 更新文件列表缓存
+			Cache_File_List();
+			Refresh_Display();
+			// HMI提示
+			sprintf(Tx_Buffer, "File_M.t7.txt=\"删除成功\"\xff\xff\xff");
+	}
+	else {
+			sprintf(Tx_Buffer, "File_M.t7.txt=\"错误:%d\"\xff\xff\xff", res);
+	}
+	USART1_Tx_HMIdata((uint8_t*)Tx_Buffer);
 
-		// 处理结果
-		if(res == FR_OK) {
-				// 更新文件列表缓存
-				Cache_File_List();
-				Refresh_Display();
-				// HMI提示
-				sprintf(Tx_Buffer, "Main.t0.txt=\"删除成功\"\xff\xff\xff");
-		} else {
-				sprintf(Tx_Buffer, "Main.t0.txt=\"错误:%d\"\xff\xff\xff", res);
-		}
-		USART1_Tx_HMIdata((uint8_t*)Tx_Buffer);
+	HAL_Delay(1000);
+
+	sprintf(Tx_Buffer, "File_M.t7.txt=\"\"\xff\xff\xff",paging.file_list[actual_index]);
+	USART1_Tx_HMIdata((uint8_t*)Tx_Buffer);
+	Confirm_Msg.display = 0;
+	Confirm_Msg.type = CONFIRM_NULL;
 }
 
 void scroll_focus_line(void){
 	sprintf(Tx_Buffer,"File_M.t%d.bco=65535\xff\xff\xff",last_focus_line);
 	USART1_Tx_HMIdata((uint8_t*)Tx_Buffer);
+
 	sprintf(Tx_Buffer,"File_M.t%d.pco=0\xff\xff\xff",last_focus_line);
 	USART1_Tx_HMIdata((uint8_t*)Tx_Buffer);
 
 	sprintf(Tx_Buffer,"File_M.t%d.bco=825\xff\xff\xff",current_focus_line);
 	USART1_Tx_HMIdata((uint8_t*)Tx_Buffer);
+
 	sprintf(Tx_Buffer,"File_M.t%d.pco=65535\xff\xff\xff",current_focus_line);
 	USART1_Tx_HMIdata((uint8_t*)Tx_Buffer);
 }

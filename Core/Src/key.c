@@ -18,8 +18,7 @@ uint8_t key_press_sigle = 0;
 uint8_t key_pressed = 0;
 volatile uint16_t key_press_time = 0;
 
-enum KEY_VAL {KEY_NULL,KEY_DELETE,KEY_CONFIRM,KEY_CANCEL};
-enum KEY_VAL key_code;
+volatile enum KEY_VAL key_code;
 
 //在按键中断中调用
 uint8_t key_scan(){
@@ -57,7 +56,7 @@ void deal_key(){
 				}
 			}
 			else
-			if(page_location == File_M_page){
+			if(page_location == File_M_page){//光标下移
 				last_focus_line = current_focus_line;
 				if(current_focus_line > 0){
 					current_focus_line--;
@@ -66,8 +65,8 @@ void deal_key(){
 				}
 				dir_display_refresh = 1;
 			}
-			}break;
-
+			}
+			break;
 			case CONFIRM_KEY_PRESS://确认
 			{
 				if(page_location == Main_page){
@@ -92,11 +91,12 @@ void deal_key(){
 					}
 				}
 				else
-				if(page_location == File_M_page){
+				if(page_location == File_M_page){//确认、翻页
 					focus_key_pressed = 1;
+					key_code = KEY_CONFIRM;
 				}
-			}break;
-
+			}
+			break;
 			case INCREASE_KEY_PRESS://增加
 			{
 			if(page_location == Main_page){
@@ -109,7 +109,7 @@ void deal_key(){
 				}
 			}
 			else
-			if(page_location == File_M_page){
+			if(page_location == File_M_page){//光标上移
 				last_focus_line = current_focus_line;
 				if(current_focus_line < 5){
 					current_focus_line++;
@@ -118,30 +118,30 @@ void deal_key(){
 				}
 				dir_display_refresh = 1;
 			}
-			}break;
-
+			}
+			break;
 			case Q_SET_KEY_PRESS://快设
 			{
 			if(page_location == Main_page){
 				read_i2c = 1;
 			}
 			else
-			if(page_location == File_M_page){
-				qset_pressed = 1;
+			if(page_location == File_M_page){//删除文件
+				key_code = KEY_DELETE;
 			}
-			}break;
-
+			}
+			break;
 			case EX_GAS_KEY_PRESS://排气
 			{
 			if(page_location == Main_page){
 				EX_GAS_pressed = 1;
 			}
 			else
-			if(page_location == File_M_page){
-
+			if(page_location == File_M_page){//发送文件
+				key_code = KEY_SENDFILE;
 			}
-			}break;
-
+			}
+			break;
 			case START_KEY_PRESS://开始
 			{
 			if(page_location == Main_page){
@@ -168,10 +168,10 @@ void deal_key(){
 			}
 			else
 			if(page_location == File_M_page){
-
+				key_code = KEY_SENDFILE;
 			}
-			}break;
-
+			}
+			break;
 			case NRESET_KEY_PRESS://复位键
 			{
 				if(page_location == Main_page){
@@ -179,22 +179,11 @@ void deal_key(){
 				}
 				else
 				if(page_location == File_M_page){
-					File_manage_state =0;
-					Main_page_state = 1;
-					sprintf(Tx_Buffer,"page Main\xff\xff\xff");
-					USART1_Tx_HMIdata((uint8_t*)Tx_Buffer);
-
-					sprintf(Tx_Buffer,"Main.n2.val=%d\xff\xff\xff",total_Times);
-					USART1_Tx_HMIdata((uint8_t*)Tx_Buffer);
-
-					sprintf(Tx_Buffer,"Main.n3.val=%d\xff\xff\xff",total_inject_Dosage);
-					USART1_Tx_HMIdata((uint8_t*)Tx_Buffer);
-
-					sprintf(Tx_Buffer,"Main.n1.val=%d\xff\xff\xff",current_TreeNo);
-					USART1_Tx_HMIdata((uint8_t*)Tx_Buffer);
+					key_code = KEY_CANCEL;
+//					Back_to_MainPage();
 				}
-			}break;
-
+			}
+			break;
 			case PAUSE_KEY_PRESS://暂停
 			{
 			if(page_location == Main_page){
@@ -210,52 +199,52 @@ void deal_key(){
 			if(page_location == File_M_page){
 
 			}
-			}break;
+			}
+			break;
 		}
 	}
 }
 
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {
+	if (HAL_GPIO_ReadPin(KEY_EXTI11_GPIO_Port, KEY_EXTI11_Pin) == GPIO_PIN_SET) {
+	// 处理上升沿中断
+		HAL_GPIO_WritePin(LED_Y_GPIO_Port, LED_Y_Pin,GPIO_PIN_RESET);
+		key_pressed = 0;
+		key_value = 0;
+		key_last_time = 0;
+		key_now_time = 0;
+		key_value_Refresh = 0;
+		key_press_time = 0;
+		key_press_long = 0;
 
-    if (HAL_GPIO_ReadPin(KEY_EXTI11_GPIO_Port, KEY_EXTI11_Pin) == GPIO_PIN_SET) {
-    // 处理上升沿中断
-    	HAL_GPIO_WritePin(LED_Y_GPIO_Port, LED_Y_Pin,GPIO_PIN_RESET);
-    	key_pressed = 0;
-    	key_value = 0;
-    	key_last_time = 0;
-    	key_now_time = 0;
-    	key_value_Refresh = 0;
-    	key_press_time = 0;
-    	key_press_long = 0;
+		if(HAL_GPIO_ReadPin(NRESET_GPIO_Port,NRESET_Pin) == GPIO_PIN_SET){
+			nReset_pressed = 0;
+		}
 
-    	if(HAL_GPIO_ReadPin(NRESET_GPIO_Port,NRESET_Pin) == GPIO_PIN_SET){
-    		nReset_pressed = 0;
-    	}
+		if(HAL_GPIO_ReadPin(PAUSE_GPIO_Port,PAUSE_Pin) == GPIO_PIN_SET){
+			pause_pressed = 0;
+		}
 
-    	if(HAL_GPIO_ReadPin(PAUSE_GPIO_Port,PAUSE_Pin) == GPIO_PIN_SET){
-    		pause_pressed = 0;
-    	}
+		if(HAL_GPIO_ReadPin(EX_GAS_GPIO_Port,EX_GAS_Pin) == GPIO_PIN_SET){
+			EX_GAS_start = 0;
+			EX_GAS_pressed = 0;
+		}
+	}
 
-    	if(HAL_GPIO_ReadPin(EX_GAS_GPIO_Port,EX_GAS_Pin) == GPIO_PIN_SET){
-    		EX_GAS_start = 0;
-    		EX_GAS_pressed = 0;
-    	}
-    }
+	if (HAL_GPIO_ReadPin(KEY_EXTI11_GPIO_Port, KEY_EXTI11_Pin) == GPIO_PIN_RESET) {
+	// 处理下降沿中断
+		if(!key_scan_lock){
+			key_scan_lock = 1;//防止多次执行下降沿中断函数
+			key_lock_time = now_time;
 
-    if (HAL_GPIO_ReadPin(KEY_EXTI11_GPIO_Port, KEY_EXTI11_Pin) == GPIO_PIN_RESET) {
-    // 处理下降沿中断
-    	if(!key_scan_lock){
-    		key_scan_lock = 1;//防止多次执行下降沿中断函数
-    		key_lock_time = now_time;
+			HAL_GPIO_WritePin(LED_Y_GPIO_Port, LED_Y_Pin,GPIO_PIN_SET);
+			key_pressed = 1;
+			key_value = key_scan();
+			key_last_time = key_now_time;
+			key_press_sigle = 1;
 
-				HAL_GPIO_WritePin(LED_Y_GPIO_Port, LED_Y_Pin,GPIO_PIN_SET);
-				key_pressed = 1;
-				key_value = key_scan();
-				key_last_time = key_now_time;
-				key_press_sigle = 1;
-
-				deal_key();
-				HAL_GPIO_WritePin(LED_Y_GPIO_Port, LED_Y_Pin,GPIO_PIN_RESET);
-    	}
-    }
+			deal_key();
+			HAL_GPIO_WritePin(LED_Y_GPIO_Port, LED_Y_Pin,GPIO_PIN_RESET);
+		}
+	}
 }

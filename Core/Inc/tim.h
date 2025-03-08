@@ -50,8 +50,8 @@ extern uint8_t EX_GAS_start;
 extern uint8_t waiting_start_timeout;
 extern uint16_t confirm_press_time;
 
-extern uint8_t File_manage_state;
-extern uint8_t Main_page_state;
+//extern uint8_t File_manage_state;
+//extern uint8_t Main_page_state;
 
 extern uint8_t gaspres_refreshed;
 extern volatile uint32_t now_time_inject;

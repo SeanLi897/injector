@@ -9,6 +9,9 @@
 
 #define MAX_DISPLAY_ITEMS 6		//每页最多显示6行
 
+enum HMI_PAGE {Main_page,File_M_page};
+enum CONFIRM_MSG {CONFIRM_NULL,CONFIRM_SEND_FILE,CONFIRM_DELETE_FILE};
+enum CONFIRM_RESAULT {CANCEL_CONFIRM,DELETE_FILE,SEND_FILE};
 // 分页控制结构体
 typedef struct {
     uint16_t file_count;
@@ -27,12 +30,19 @@ typedef struct {
 //    char* files[MAX_DISPLAY_ITEMS];
 //} page_cache[CACHE_PAGES];
 
+typedef struct{
+	uint8_t display;
+	enum CONFIRM_MSG type;
+}MsgState;
+
 extern uint8_t dir_display_refresh;
 extern uint8_t refresh_dir;
 extern uint8_t first_display_dir;
 extern uint8_t current_focus_line;// 当前焦点行0-5
 extern uint8_t last_focus_line;
 extern uint8_t focus_key_pressed;
+extern enum CONFIRM_RESAULT sec_confirm_resault;
+//extern enum CONFIRM_MSG secondary_confirm_type;
 extern enum HMI_PAGE page_location;
 
 void HMI_init(void);
@@ -40,6 +50,8 @@ void HMI_init(void);
 void scroll_focus_line(void);
 void Refresh_Display();
 void Cache_File_List();
-void On_Key_Pressed();
+void On_Key_Pressed(uint8_t key_code);
+void Back_to_MainPage(void);
+void page_turning(void);
 
 #endif /* INC_HMI_H_ */

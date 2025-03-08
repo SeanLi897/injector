@@ -26,8 +26,8 @@ volatile uint32_t last_time_inject = 0;
 volatile uint16_t GasPrs_LOW_time = 0;
 
 uint16_t confirm_press_time = 0;
-uint8_t File_manage_state = 0;
-uint8_t Main_page_state = 0;
+//uint8_t File_manage_state = 0;
+//uint8_t Main_page_state = 0;
 
 uint8_t over_pressure = 0;
 uint8_t cheat_flag = 0;
@@ -274,7 +274,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
 				}
 			}
 
-		if(cancel_delay_time >= 3000 && Main_page_state){
+		if(cancel_delay_time >= 3000 && (page_location == Main_page)){
 			if(Injecting && pause_state){
 				cancel_delay_time = 0;
 				Injecting = 0;
@@ -313,11 +313,11 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
 			USART1_Tx_HMIdata((uint8_t*)Tx_Buffer);
 		}
 
-		if(ExGas_delay_time >= 3500 && Main_page_state){
+		if(ExGas_delay_time >= 3500 && (page_location == Main_page)){
 			EX_GAS_start = 1;
 		}
 		else
-		if(ExGas_delay_time >= 3500 && File_manage_state){
+		if(ExGas_delay_time >= 3500 && (page_location == File_M_page)){
 				ExGas_delay_time = 0;
 				EX_GAS_start = 0;
 			}
@@ -332,10 +332,9 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
 			pause_state = 1;
 		}
 
-		if(confirm_press_time >= 3000 && Main_page_state){
+		if(confirm_press_time >= 3000 && (page_location == Main_page)){
 			confirm_press_time = 0;
-			File_manage_state = 1;
-			Main_page_state = 0;
+			page_location = File_M_page;
 			sprintf(Tx_Buffer,"page File_M\xff\xff\xff");
 			USART1_Tx_HMIdata((uint8_t*)Tx_Buffer);
 			HAL_Delay(20);
@@ -417,7 +416,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
 				key_press_long = 1;
 			}
 
-		if(key_press_long && Main_page_state){
+		if(key_press_long && (page_location == Main_page)){
 			key_press_time++;
 
 			if(key_press_time >= 500){
