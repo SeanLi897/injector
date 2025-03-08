@@ -87,26 +87,7 @@ DRESULT disk_read (
 
   switch (pdrv) {
   case DEV_SPI_SD: /* SD CARD */
-//      if ((DWORD)buff&3) {
-//          DRESULT res = RES_OK;
-//          DWORD scratch[SD_BLOCKSIZE / 4];
-//          while (count--) {
-//              res = disk_read(ATA,(void *)scratch, sector++, 1);
-//              if (res != RES_OK) {
-//                  break;
-//              }
-//              memcpy(buff, scratch, SD_BLOCKSIZE);
-//              buff += SD_BLOCKSIZE;
-//          }
-//          return res;
-//      }
-
       SD_state=SD_ReadMultiBlocks(buff,sector *SD_BLOCK_SIZE,SD_BLOCK_SIZE,count);
-//      if (SD_state==SD_OK) {
-//          /* Check if the Transfer is finished */
-//          SD_state=SD_WaitReadOperation();
-//          while (SD_GetStatus() != SD_TRANSFER_OK);
-//      }
 
       if (SD_state!=SD_RESPONSE_NO_ERROR)
           status = RES_PARERR;
@@ -147,29 +128,9 @@ DRESULT disk_write (
 
   switch (pdrv) {
   case DEV_SPI_SD: /* SD CARD */
-//      if ((DWORD)buff&3) {
-//          DRESULT res = RES_OK;
-//          DWORD scratch[SD_BLOCKSIZE / 4];
-//
-//          while (count--) {
-//              memcpy( scratch,buff,SD_BLOCKSIZE);
-//              res = disk_write(ATA,(void *)scratch, sector++, 1);
-//              if (res != RES_OK) {
-//                  break;
-//              }
-//              buff += SD_BLOCKSIZE;
-//          }
-//          return res;
-//      }
 
       SD_state=SD_WriteMultiBlocks((uint8_t *)buff,sector*SD_BLOCK_SIZE,SD_BLOCK_SIZE,count);
-//      if (SD_state!=SD_RESPONSE_NO_ERROR) {
-//          /* Check if the Transfer is finished */
-//          SD_state=SD_WaitReadOperation();
-//
-//          /* Wait until end of DMA transfer */
-//          while (SD_GetStatus() != SD_TRANSFER_OK);
-//      }
+
       if (SD_state!=SD_RESPONSE_NO_ERROR)
           status = RES_PARERR;
       else

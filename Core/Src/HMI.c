@@ -134,15 +134,6 @@ void Cache_File_List() {
     paging.current_page = 1;
 }
 
-void On_Key_Pressed(uint8_t key_code) {
-	if(key_code == KEY_CONFIRM){
-		page_turning();
-	}
-	else
-	if(key_code == KEY_DELETE){
-		On_Delete_Key_Pressed();
-	}
-}
 
 FRESULT delete_file(const char* path) {
     FRESULT res;
@@ -187,11 +178,8 @@ void page_turning(void){
 }
 
 void On_Delete_Key_Pressed(){
-	if(paging.show_prev_more && current_focus_line == 0)
+	if((paging.show_prev_more && current_focus_line == 0) || (paging.show_next_more && current_focus_line == 5))
 		return 1;
-	else if(paging.show_prev_more && current_focus_line == 5)
-		return 1;
-
 	// 计算实际文件索引（需考虑分页提示符）
 	uint16_t actual_index = paging.start_index + current_focus_line;
 	if(paging.show_prev_more) actual_index -= 1; // 排除"..."行
@@ -242,12 +230,12 @@ void On_Delete_Key_Pressed(){
 			Cache_File_List();
 			Refresh_Display();
 			// HMI提示
-			sprintf(Tx_Buffer, "File_M.t7.txt=\"删除成功\"\xff\xff\xff");
+//			sprintf(Tx_Buffer, "File_M.t7.txt=\"删除成功\"\xff\xff\xff");
 	}
 	else {
-			sprintf(Tx_Buffer, "File_M.t7.txt=\"错误:%d\"\xff\xff\xff", res);
+//			sprintf(Tx_Buffer, "File_M.t7.txt=\"错误:%d\"\xff\xff\xff", res);
 	}
-	USART1_Tx_HMIdata((uint8_t*)Tx_Buffer);
+//	USART1_Tx_HMIdata((uint8_t*)Tx_Buffer);
 
 	HAL_Delay(1000);
 
@@ -257,7 +245,97 @@ void On_Delete_Key_Pressed(){
 	Confirm_Msg.type = CONFIRM_NULL;
 }
 
-void scroll_focus_line(void){
+void sendFile_key_pressed(){
+	if((paging.show_prev_more && current_focus_line == 0) || (paging.show_next_more && current_focus_line == 5))
+		return 1;
+	// 计算实际文件索引（需考虑分页提示符）
+	uint16_t actual_index = paging.start_index + current_focus_line;
+	if(paging.show_prev_more) actual_index -= 1; // 排除"..."行
+
+	// 构造完整路径
+	char full_path[FF_MAX_LFN + 3] = "0:/";
+	strcat(full_path, paging.file_list[actual_index]);
+
+	while(1){
+		if(HAL_GPIO_ReadPin(BLE_LED_GPIO_Port, BLE_LED_Pin) == GPIO_PIN_RESET)
+		{
+			sprintf(Tx_Buffer, "File_M.t7.txt=\"蓝牙未连接\"\xff\xff\xff");
+			USART1_Tx_HMIdata((uint8_t*)Tx_Buffer);
+		}else
+			break;
+
+		if(key_code == KEY_CANCEL){
+			sprintf(Tx_Buffer, "File_M.t7.txt=\"\"\xff\xff\xff");
+			USART1_Tx_HMIdata((uint8_t*)Tx_Buffer);
+			Confirm_Msg.display = 0;
+			Confirm_Msg.type = CONFIRM_NULL;
+			key_code = KEY_NULL;
+			return;
+		}
+	}
+
+	sprintf(Tx_Buffer, "File_M.t7.txt=\"确认发送%s?\"\xff\xff\xff",paging.file_list[actual_index]);
+	USART1_Tx_HMIdata((uint8_t*)Tx_Buffer);
+	Confirm_Msg.display = 1;
+	Confirm_Msg.type = CONFIRM_SEND_FILE;
+
+	while(1){
+		if(key_code == KEY_CONFIRM){
+			key_code = KEY_NULL;
+			break;
+		}
+		if(key_code == KEY_CANCEL){
+			sprintf(Tx_Buffer, "File_M.t7.txt=\"\"\xff\xff\xff");
+			USART1_Tx_HMIdata((uint8_t*)Tx_Buffer);
+			Confirm_Msg.display = 0;
+			Confirm_Msg.type = CONFIRM_NULL;
+			key_code = KEY_NULL;
+			return;
+		}
+	}
+
+	FIL fp;
+	FRESULT res;
+	res = check_file_exists(full_path);
+
+	if (res == FR_OK) {
+//			printf("文件存在\r\n");
+	} else if (res == FR_NO_FILE) {
+//			printf("文件不存在\r\n");
+			return;
+	}
+
+	sprintf(Tx_Buffer, "File_M.t7.txt=\"正在发送%s\"\xff\xff\xff",paging.file_list[actual_index]);
+	USART1_Tx_HMIdata((uint8_t*)Tx_Buffer);
+
+	uint32_t real_read_num = 0;
+	uint8_t line_buf[100] = {0};
+	res = f_open(&fp, full_path, FA_READ);
+	if(res != FR_OK)
+	{
+//		printf("f_open fail:%s\r\n", full_path);
+		return 1;
+	}
+
+	while(f_gets(line_buf,sizeof(line_buf),&fp)!= NULL){
+		USART2_Tx_BLEdata(line_buf);
+	}
+
+	res = f_close(&fp);
+	if(res != FR_OK)
+	{
+//		printf("f_close fail:%d\r\n", res);
+		return 1;
+	}
+	HAL_Delay(1000);
+
+	sprintf(Tx_Buffer, "File_M.t7.txt=\"\"\xff\xff\xff",paging.file_list[actual_index]);
+	USART1_Tx_HMIdata((uint8_t*)Tx_Buffer);
+	Confirm_Msg.display = 0;
+	Confirm_Msg.type = CONFIRM_NULL;
+}
+
+ void scroll_focus_line(void){
 	sprintf(Tx_Buffer,"File_M.t%d.bco=65535\xff\xff\xff",last_focus_line);
 	USART1_Tx_HMIdata((uint8_t*)Tx_Buffer);
 

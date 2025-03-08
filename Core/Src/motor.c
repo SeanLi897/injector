@@ -107,7 +107,6 @@ void motor_Forward_Cycle(){
 	while(now_time_inject - last_time_inject <= 15);//推杆泵前推1.5s
 //	HAL_Delay(1500);
 				Motor_Brake();
-
 }
 
 void motor_Reverse_Cycle(){

@@ -4,8 +4,8 @@
 ../Core/Src/usart.c:138:6:HAL_UART_MspInit	56	static
 ../Core/Src/usart.c:248:6:HAL_UART_MspDeInit	8	static
 ../Core/Src/usart.c:315:6:USART1_Tx_HMIdata	8	static
-../Core/Src/usart.c:321:6:USART1_Tx_data	0	static
-../Core/Src/usart.c:327:6:USART2_Tx_BLEdata	16	static
-../Core/Src/usart.c:333:6:USART3_Tx_GPSdata	16	static
-../Core/Src/usart.c:352:6:HAL_UART_TxCpltCallback	0	static
-../Core/Src/usart.c:362:6:HAL_UART_RxCpltCallback	96	static
+../Core/Src/usart.c:319:6:USART1_Tx_data	0	static
+../Core/Src/usart.c:323:6:USART2_Tx_BLEdata	16	static
+../Core/Src/usart.c:329:6:USART3_Tx_GPSdata	16	static
+../Core/Src/usart.c:335:6:HAL_UART_TxCpltCallback	0	static
+../Core/Src/usart.c:345:6:HAL_UART_RxCpltCallback	96	static

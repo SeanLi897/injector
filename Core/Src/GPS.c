@@ -327,48 +327,4 @@ void Get_GPS_Date(char* DateStr, GPS_Data RMC_Result_Data){
 	}
 }
 
-//void SD_write_GPSData(GPS_Data GGA_Result_Data, GPS_Data RMC_Result_Data){
-//	char Str_buf[30] = {0};
-//	char Tx_Buffer[50] = {0};
-//
-//	if(GGA_data_used == 0 && RMC_data_used == 0){
-//		//日期时间
-//		Format_GPS_DateTime(Str_buf,RMC_Result_Data.time,RMC_Result_Data.date);
-//		snprintf(Tx_Buffer,50,"%s,",Str_buf);
-//		USART1_Tx_HMIdata((uint8_t*)Tx_Buffer);
-//
-//		memset(Str_buf, '\0', sizeof(Str_buf));
-//		memset(Tx_Buffer, '\0', sizeof(Tx_Buffer));
-//
-//		RMC_data_used = 1;
-//
-//		//经度
-//		FormatLongitude(Str_buf, GGA_Result_Data.longitude, GGA_Result_Data.lon_dir);
-//		snprintf(Tx_Buffer,50,"%s,",Str_buf);
-//		USART1_Tx_HMIdata((uint8_t*)Tx_Buffer);
-//
-//		memset(Str_buf, '\0', sizeof(Str_buf));
-//		memset(Tx_Buffer, '\0', sizeof(Tx_Buffer));
-//
-//		//纬度
-//		FormatLatitude(Str_buf, GGA_Result_Data.latitude, GGA_Result_Data.lat_dir);
-//		snprintf(Tx_Buffer,50,"%s\r\n",Str_buf);
-//		USART1_Tx_HMIdata((uint8_t*)Tx_Buffer);
-//
-//		memset(Str_buf, '\0', sizeof(Str_buf));
-//		memset(Tx_Buffer, '\0', sizeof(Tx_Buffer));
-//
-////		//海拔
-////		FormatAltitude(Str_buf, GGA_Result_Data.altitude);
-////		snprintf(Tx_Buffer,50,"%s,",Str_buf);
-////		USART1_Tx_HMIdata((uint8_t*)Tx_Buffer);
-////
-////		memset(Str_buf, '\0', sizeof(Str_buf));
-////		memset(Tx_Buffer, '\0', sizeof(Tx_Buffer));
-//
-//		GGA_data_used = 1;
-//	}
-//	return 0;
-//}
-
 /* USER CODE END 0 */

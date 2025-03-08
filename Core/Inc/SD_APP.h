@@ -31,7 +31,6 @@ extern uint16_t csv_crt_line_No;
 uint8_t SD_FS_Init(void);
 uint8_t demo_user_fs(void);
 int CSV_sheet_Init(void);
-
-//int SDCard_Write_log(GPS_Data GGA_Result_Data, GPS_Data RMC_Result_Data);
+FRESULT check_file_exists(const char* path);
 
 #endif /* INC_SD_APP_H_ */

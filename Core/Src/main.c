@@ -137,11 +137,11 @@ int main(void)
   if(SDCard_states == 0){
     CSV_sheet_Init();
   }else{
-  	printf("CSV file initialization failed!\r\n");
+//  	printf("CSV file initialization failed!\r\n");
   }
 
   AD24C02_Read2Byte(CSV_LAST_LINE_ADDRESS, &csv_crt_line_No);//读取最后一次保存的行号
-  printf("System Initialized\r\n");
+//  printf("System Initialized\r\n");
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -159,21 +159,6 @@ int main(void)
 			}
 			i = 0;
   	}
-
-//    HAL_Delay(1000);
-//  	if (uart2_idle_flag) {  // 接收到完整字符串
-//  		uart2_idle_flag = 0;
-//  	  // 回显接收到的数据
-//  	  HAL_UART_Transmit(&huart2, rx2_buffer, uart2_received_len, 100);
-//  	  HAL_UART_Transmit(&huart1, rx2_buffer, uart2_received_len, 100);
-//
-//  	  // 清空缓冲区（可选）
-//  	  memset(rx2_buffer, 0, RX_BUFFER_SIZE);
-//  	}
-//
-  	sprintf(Tx_Buffer,"蓝牙发送测试...\r\n");
-  	USART2_Tx_BLEdata(Tx_Buffer);
-  	HAL_Delay(1000);
 
   	if(Injecting && (page_location == Main_page)){
 			sprintf(Tx_Buffer,"Main.t0.txt=\"正在注药\"\xff\xff\xff");
@@ -211,17 +196,12 @@ int main(void)
 					On_Delete_Key_Pressed();
 					break;
 				case KEY_SENDFILE:
-
+					sendFile_key_pressed();
 					break;
 				default:
 					break;
 			}
 			key_code = KEY_NULL;
-
-//			if(focus_key_pressed){
-//				focus_key_pressed = 0;
-//				On_Key_Pressed(key_code);
-//			}
 
 			if(dir_display_refresh){
 				scroll_focus_line();

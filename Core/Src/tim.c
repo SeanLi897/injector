@@ -26,9 +26,6 @@ volatile uint32_t last_time_inject = 0;
 volatile uint16_t GasPrs_LOW_time = 0;
 
 uint16_t confirm_press_time = 0;
-//uint8_t File_manage_state = 0;
-//uint8_t Main_page_state = 0;
-
 uint8_t over_pressure = 0;
 uint8_t cheat_flag = 0;
 uint8_t Invalid_action_times = 0;
@@ -209,8 +206,10 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
 
 		if((now_time_inject % 10 == 0) && ADC_CONV_cplt){
 			ADC_CONV_cplt = 0;
-//			refresh_bat_vlt();
-//			refresh_gasPrs();
+			if(page_location == Main_page){
+			refresh_bat_vlt();
+			refresh_gasPrs();
+			}
 		}
 
 		if(Injecting){
@@ -366,12 +365,12 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
 			GasPrs_LOW_time = 0;
 		}
 //单板调试时关闭
-//		if(GasPrs_LOW_time >= 4500){
-//			cheat_flag = 1;
-//		}
-//		else if(GasPrs_LOW_time == 0){
-//			cheat_flag = 0;
-//		}
+		if(GasPrs_LOW_time >= 4500){
+			cheat_flag = 1;
+		}
+		else if(GasPrs_LOW_time == 0){
+			cheat_flag = 0;
+		}
 
 		if(GasPrs_HIGH == 1){
 			over_pressure = 1;

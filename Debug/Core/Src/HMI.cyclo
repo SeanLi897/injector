@@ -4,8 +4,8 @@
 ../Core/Src/HMI.c:49:6:Back_to_MainPage	1
 ../Core/Src/HMI.c:64:6:Refresh_Display	6
 ../Core/Src/HMI.c:94:6:Cache_File_List	9
-../Core/Src/HMI.c:147:9:delete_file	2
-../Core/Src/HMI.c:165:6:page_turning	7
-../Core/Src/HMI.c:189:6:On_Delete_Key_Pressed	11
-../Core/Src/HMI.c:137:6:On_Key_Pressed	3
-../Core/Src/HMI.c:260:6:scroll_focus_line	1
+../Core/Src/HMI.c:138:9:delete_file	2
+../Core/Src/HMI.c:156:6:page_turning	7
+../Core/Src/HMI.c:180:6:On_Delete_Key_Pressed	12
+../Core/Src/HMI.c:248:6:sendFile_key_pressed	14
+../Core/Src/HMI.c:338:7:scroll_focus_line	1

@@ -313,15 +313,11 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef* uartHandle)
 
 /* USER CODE BEGIN 1 */
 void USART1_Tx_HMIdata(uint8_t *Tx_Buffer){
-//	Tx1_cplt_flag = 0;
 	HAL_UART_Transmit(&huart1, (uint8_t*)Tx_Buffer, strlen(Tx_Buffer),HAL_MAX_DELAY);
-//	while(!Tx1_cplt_flag);
 }
 
 void USART1_Tx_data(uint8_t *Tx_Buffer){
-//	Tx1_cplt_flag = 0;
 	HAL_UART_Transmit(&huart1, (uint8_t*)Tx_Buffer, strlen(Tx_Buffer),HAL_MAX_DELAY);
-//	while(!Tx1_cplt_flag);
 }
 
 void USART2_Tx_BLEdata(uint8_t *Tx_Buffer){
@@ -335,19 +331,6 @@ void USART3_Tx_GPSdata(uint8_t *Tx_Buffer){
 	HAL_UART_Transmit_IT(&huart3, (uint8_t*)Tx_Buffer, strlen(Tx_Buffer));
 	while(!Tx3_cplt_flag);
 }
-
-//void UART_IdleCallback(UART_HandleTypeDef *huart){
-//	if(huart == &huart1){
-//	// 停止DMA传输（防止处理期间数据被覆盖）
-//	    HAL_UART_DMAStop(&huart1);
-//	// 计算接收到的数据长度
-//	    uart1_received_len = RX_BUFFER_SIZE - __HAL_DMA_GET_COUNTER(huart1.hdmarx);
-//	// 设置标志位通知主循环处理数据
-//	    uart1_idle_flag = 1;
-//	// 重启DMA接收（使用循环模式无需重新初始化）
-//	    HAL_UART_Receive_DMA(&huart1, rx1_buffer, RX_BUFFER_SIZE);
-//	}
-//}
 
 void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart){
 	if(huart == &huart2){
@@ -365,7 +348,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
     static uint8_t frame_header_valid = 0;
     GPS_Data gps_rsltBuf;
 
-    if (huart == &huart3) {
+    if (huart == &huart3) {//GPS接收
         uint8_t ch = gps_rx_buffer[gps_rx_index];
 
         if(ch == '$' || frame_header_valid){

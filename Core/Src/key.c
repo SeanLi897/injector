@@ -180,7 +180,6 @@ void deal_key(){
 				else
 				if(page_location == File_M_page){
 					key_code = KEY_CANCEL;
-//					Back_to_MainPage();
 				}
 			}
 			break;

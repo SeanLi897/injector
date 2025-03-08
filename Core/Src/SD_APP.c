@@ -36,16 +36,16 @@ int SDCard_InsertCheck(void){
 
   	if(ret == 0){
   		SDCard_states = 0; //正常
-  		printf("SDCard Init success!\r\n");
+//  		printf("SDCard Init success!\r\n");
   	}
   	else{
   		SDCard_states = -1;//初始化失败
-  		printf("SDCard Init fail!\r\n");
+//  		printf("SDCard Init fail!\r\n");
   	}
   }
   else{
   	SDCard_states = -2;//未插入SD卡
-  	printf("SDCard is not insert!\r\n");
+//  	printf("SDCard is not insert!\r\n");
   }
   return SDCard_states;
 }
@@ -75,11 +75,11 @@ uint8_t SD_FS_Init(void)
     }
     if(ret != 0)
     {
-      printf("sd fs f_mkfs fail(%d)\r\n", ret);
+//      printf("sd fs f_mkfs fail(%d)\r\n", ret);
     }
     else
     {
-    	printf("sd fs f_mkfs success!\r\n");
+//    	printf("sd fs f_mkfs success!\r\n");
     }
     return ret;
 }
@@ -88,196 +88,6 @@ FRESULT check_file_exists(const char* path) {
     FILINFO fno;
     return f_stat(path, &fno);
 }
-
-//#define USER_FILE_NAME "0:/20250224.txt"
-
-//uint8_t demo_user_fs(void)
-//{
-//    FIL fp;
-//    uint32_t real_write_num = 0;
-//    FRESULT res;
-//
-//    char USER_FILE_NAME[15] = {0};
-//    char file_name_buf[15] = {0};
-//    Format_FileName_Date(file_name_buf, GPS_RMC_Data.time, GPS_RMC_Data.date);
-//    snprintf(USER_FILE_NAME,15,"0:/%s.txt",file_name_buf);
-//		printf("%s\r\n",USER_FILE_NAME);
-//
-//    res = check_file_exists(USER_FILE_NAME);
-//
-//    if (res == FR_OK) {
-//        printf("文件存在\r\n");
-//    } else if (res == FR_NO_FILE) {
-//        printf("文件不存在\r\n");
-//    } else {
-//        printf("错误码: %d\r\n", res);  // 其他错误（如硬件问题）
-//    }
-//
-//    FRESULT ret = f_open(&fp, USER_FILE_NAME, FA_CREATE_ALWAYS | FA_WRITE | FA_READ);
-//    if(ret != FR_OK)
-//    {
-//    	printf("f_open fail: %s\r\n", USER_FILE_NAME);
-//      return 1;
-//    }
-//
-//    uint8_t *test_w_b = "fs test write  gps data!";
-//    ret = f_write_retry(&fp, test_w_b, strlen(test_w_b));
-//
-//    if(ret != FR_OK)
-//    {
-//    	printf("f_open fail:%d\r\n", ret );
-//      return 1;
-//    }
-//
-//    ret = f_close(&fp);
-//    if(ret != FR_OK)
-//    {
-//    	printf("f_close fail:%d\r\n", ret);
-//      return 1;
-//    }
-//
-//    res = check_file_exists(USER_FILE_NAME);
-//
-//    if (res == FR_OK) {
-//        printf("文件存在\r\n");
-//    } else if (res == FR_NO_FILE) {
-//        printf("文件不存在\r\n");
-//    } else {
-//        printf("错误码: %d\r\n", res);  // 其他错误（如硬件问题）
-//    }
-//
-//    uint32_t real_read_num = 0;
-//    uint8_t test_r_b[100] = {0};
-//    ret = f_open(&fp, USER_FILE_NAME, FA_READ);
-//    if(ret != FR_OK)
-//    {
-//    	printf("f_open fail:%s\r\n", USER_FILE_NAME);
-//      return 1;
-//    }
-//
-//    ret = f_read(&fp, test_r_b, 100, &real_read_num);
-//    if(ret != FR_OK)
-//    {
-//    	printf("f_read fail:%d\r\n", ret);
-//      return 1;
-//    }
-//    printf("read data:%s\r\n", test_r_b);
-//
-//    ret = f_close(&fp);
-//    if(ret != FR_OK)
-//    {
-//    	printf("f_close fail:%d\r\n", ret);
-//      return 1;
-//    }
-////    else{
-////    	printf("fs test read data f_close success!\r\n");
-////    }
-//    return 0;
-//}
-
-//#define FileName "0:/ABC.txt"
-//void SD_TEST(void){
-//	FIL fnew;
-//	FIL fs;
-//	uint32_t fnum = 0;
-////----------------------f_mount()----------------------------
-////	res_flash = f_mount(&fs,DISK_SD,1);                        // 挂载文件系统
-////	printf("res_flash:%d\r\n",res_flash);
-////
-////	if(res_flash == FR_NO_FILESYSTEM)                       // 检测是否存在文件系统
-////		{
-////			res_flash = f_mkfs(DISK_SD,NULL,buffer,4096);          // 创建文件系统
-////			if(res_flash == FR_OK)                              // 判断是否创建成功
-////			{
-////				printf("FATFS has been mkf.\r\n");
-////				res_flash = f_mount(NULL,DISK_SD,0);               // 卸载文件系统
-////				res_flash = f_mount(&fs,DISK_SD,1);                // 重新挂载文件系统
-////			}
-////			else                                                // 创建失败
-////			{
-////				printf("FATFS mkf filed.\r\n");
-////				printf("res_flash:%d\r\n",res_flash);
-////				while(1)                                        // 死循环
-////				{
-////				}
-////			}
-////		}
-////	else if(res_flash !=FR_OK)                              // 挂载失败
-////		{
-////			printf("mount ERROR.\r\n");
-////			while(1)                                            // 死循环
-////			{
-////			}
-////		}
-////	else                                                    // 挂载成功
-////		{
-////			printf("mount OK.\r\n");
-////		}
-////-----------------------f_open()----------------------------
-//	FRESULT res_flash = f_open(&fnew,FileName,FA_CREATE_ALWAYS | FA_WRITE);  // 创建文件
-//	printf("res_flash:%d\r\n",res_flash);
-//
-//	if(res_flash == FR_OK)                                  // 判断是否创建成功
-//		{
-//			printf("File open is OK.\r\n");
-//		}
-////-----------------------f_write()----------------------------
-//	res_flash = f_write_retry(&fnew,"ABCDEFG",7);           // 写入数据
-//	if(res_flash == FR_OK)                                  // 判断是否写入成功
-//		{
-//			printf("File write is OK.\r\n");
-//		}
-//	else                                                    // 写入失败
-//		{
-//			printf("res_flash:%d\r\n",res_flash);
-//		}
-////------------------------f_close()--------------------------------------
-//	f_close(&fnew);                                         // 关闭文件
-//
-//	if(res_flash == FR_OK)                                  // 判断是否关闭成功
-//		{
-//			printf("File close is OK.\r\n");
-//		}
-//	else                                                    // 关闭失败
-//		{
-//			printf("res_flash:%d\r\n",res_flash);
-//		}
-////-------------------------f_unmount()----------------------------
-////	res_flash = f_unmount(DISK_SD);                            // 卸载文件系统
-////	printf("f_unmount-res_flash:%d\r\n",res_flash);
-////
-////	res_flash = f_mount(&fnew,DISK_SD,1);                        // 重新挂载文件系统
-////	printf("f_mount-res_flash:%d\r\n",res_flash);                       // 判断是否重新挂载成功
-////--------------------------f_open()-------------------------------------
-//	res_flash = f_open(&fs,FileName,FA_OPEN_EXISTING | FA_READ);   // 打开文件
-//	if(res_flash == FR_OK)                                  // 判断是否打开成功
-//		{
-//			printf("File open is OK.\r\n");
-//		}
-//	else                                                    // 打开失败
-//		{
-//		printf("res_flash:%d\r\n",res_flash);
-//		}
-////--------------------------f_read()-----------------------------------------
-//	res_flash = f_read(&fs,FileName,7,&fnum);                    // 读取文件内容
-//	if(res_flash == FR_OK)                                  // 判断是否读取成功
-//		{
-//			printf("File read is OK.\r\n");
-//		}
-//	else                                                    // 读取失败
-//		{
-//			printf("res_flash:%d\r\n",res_flash);
-//		}
-//	f_close(&fs);                                         // 关闭文件
-////---------------------------f_unmount()-----------------------------------------------
-////	res_flash = f_unmount(DISK_SD);                            // 卸载文件系统
-////	printf("res_flash:%d\r\n",res_flash);
-////
-////	if(res_flash == FR_OK)                                  // 判断是否卸载成功
-////		{
-////			printf("unmount OK.\r\n");
-////		}
-//}
 
 int CSV_sheet_Init(void){
 
@@ -307,7 +117,7 @@ int CSV_sheet_Init(void){
         FRESULT ret = f_open(&fp, USER_FILE_NAME, FA_WRITE | FA_OPEN_APPEND);
         if(ret != FR_OK)
         {
-        	printf("f_open fail: %s\r\n", USER_FILE_NAME);
+//        	printf("f_open fail: %s\r\n", USER_FILE_NAME);
           return 1;
         }
 
@@ -325,14 +135,14 @@ int CSV_sheet_Init(void){
 
         if(ret != FR_OK)
         {
-        	printf("f_open fail:%d\r\n", ret );
+//        	printf("f_open fail:%d\r\n", ret );
           return 1;
         }
 
         ret = f_close(&fp);
         if(ret != FR_OK)
         {
-        	printf("f_close fail:%d\r\n", ret);
+//        	printf("f_close fail:%d\r\n", ret);
           return 1;
         }
 
@@ -341,7 +151,7 @@ int CSV_sheet_Init(void){
         return 0;
 
     } else {
-        printf("错误码: %d\r\n", res);  // 其他错误（如硬件问题）
+//        printf("错误码: %d\r\n", res);  // 其他错误（如硬件问题）
         return 1;
     }
 	}
@@ -372,7 +182,7 @@ int SDCard_Write_log(GPS_Data GGA_Result_Data, GPS_Data RMC_Result_Data){
     FRESULT ret = f_open(&fp, USER_FILE_NAME, FA_WRITE | FA_OPEN_APPEND);    //打开文件，若文件不存在则创建新文件，并定位到文件末尾
     if(ret != FR_OK)
     {
-    	printf("f_open fail: %s\r\n", USER_FILE_NAME);
+//    	printf("f_open fail: %s\r\n", USER_FILE_NAME);
       return 1;
     }
 
@@ -389,12 +199,8 @@ int SDCard_Write_log(GPS_Data GGA_Result_Data, GPS_Data RMC_Result_Data){
         f_sync(&fp);
         csv_crt_line_No = 0;
         AD24C02_Write2Byte(CSV_LAST_LINE_ADDRESS, &csv_crt_line_No);
-//        break;
     case FR_OK://文件存在
     		char write_bf[50];
-//				if(csv_crt_line_No != 0){
-//					AD24C02_Read2Byte(CSV_LAST_LINE_ADDRESS, &csv_crt_line_No);//读取最后一次保存的行号
-//				}
 				LogBuf.No = csv_crt_line_No++;
 				Format_GPS_Date(LogBuf.Date,RMC_Result_Data.time,RMC_Result_Data.date);
 				Format_GPS_Time(LogBuf.Time,RMC_Result_Data.time);
@@ -413,7 +219,7 @@ int SDCard_Write_log(GPS_Data GGA_Result_Data, GPS_Data RMC_Result_Data){
 				sprintf(write_bf,"%4d,",LogBuf.No);
 				ret = f_write_retry(&fp, write_bf, strlen(write_bf));
 				if (ret != FR_OK) {
-				    printf("Write failed: %d\n", ret);
+//				    printf("Write failed: %d\n", ret);
 				    f_close(&fp);
 				    return 1;
 				}
@@ -429,7 +235,7 @@ int SDCard_Write_log(GPS_Data GGA_Result_Data, GPS_Data RMC_Result_Data){
 				}
 				ret = f_write_retry(&fp, write_bf, strlen(write_bf));
 				if (ret != FR_OK) {
-				    printf("Write failed: %d\n", ret);
+//				    printf("Write failed: %d\n", ret);
 				    f_close(&fp);
 				    return 1;
 				}
@@ -445,7 +251,7 @@ int SDCard_Write_log(GPS_Data GGA_Result_Data, GPS_Data RMC_Result_Data){
 				}
 				ret = f_write_retry(&fp, write_bf, strlen(write_bf));
 				if (ret != FR_OK) {
-				    printf("Write failed: %d\n", ret);
+//				    printf("Write failed: %d\n", ret);
 				    f_close(&fp);
 				    return 1;
 				}
@@ -455,7 +261,7 @@ int SDCard_Write_log(GPS_Data GGA_Result_Data, GPS_Data RMC_Result_Data){
 				sprintf(write_bf,"%4d,",LogBuf.TreeSN);
 				ret = f_write_retry(&fp, write_bf, strlen(write_bf));
 				if (ret != FR_OK) {
-				    printf("Write failed: %d\n", ret);
+//				    printf("Write failed: %d\n", ret);
 				    f_close(&fp);
 				    return 1;
 				}
@@ -465,7 +271,7 @@ int SDCard_Write_log(GPS_Data GGA_Result_Data, GPS_Data RMC_Result_Data){
 				sprintf(write_bf,"%d,",LogBuf.TreeDose);
 				ret = f_write_retry(&fp, write_bf, strlen(write_bf));
 				if (ret != FR_OK) {
-				    printf("Write failed: %d\n", ret);
+//				    printf("Write failed: %d\n", ret);
 				    f_close(&fp);
 				    return 1;
 				}
@@ -481,7 +287,7 @@ int SDCard_Write_log(GPS_Data GGA_Result_Data, GPS_Data RMC_Result_Data){
 				}
 				ret = f_write_retry(&fp, write_bf, strlen(write_bf));
 				if (ret != FR_OK) {
-				    printf("Write failed: %d\n", ret);
+//				    printf("Write failed: %d\n", ret);
 				    f_close(&fp);
 				    return 1;
 				}
@@ -497,7 +303,7 @@ int SDCard_Write_log(GPS_Data GGA_Result_Data, GPS_Data RMC_Result_Data){
 				}
 				ret = f_write_retry(&fp, write_bf, strlen(write_bf));
 				if (ret != FR_OK) {
-				    printf("Write failed: %d\n", ret);
+//				    printf("Write failed: %d\n", ret);
 				    f_close(&fp);
 				    return 1;
 				}
@@ -513,7 +319,7 @@ int SDCard_Write_log(GPS_Data GGA_Result_Data, GPS_Data RMC_Result_Data){
 				}
 				ret = f_write_retry(&fp, write_bf, strlen(write_bf));
 				if (ret != FR_OK) {
-				    printf("Write failed: %d\n", ret);
+//				    printf("Write failed: %d\n", ret);
 				    f_close(&fp);
 				    return 1;
 				}
@@ -523,7 +329,7 @@ int SDCard_Write_log(GPS_Data GGA_Result_Data, GPS_Data RMC_Result_Data){
 				sprintf(write_bf,"%d,",LogBuf.CumDose);
 				ret = f_write_retry(&fp, write_bf, strlen(write_bf));
 				if (ret != FR_OK) {
-				    printf("Write failed: %d\n", ret);
+//				    printf("Write failed: %d\n", ret);
 				    f_close(&fp);
 				    return 1;
 				}
@@ -533,7 +339,7 @@ int SDCard_Write_log(GPS_Data GGA_Result_Data, GPS_Data RMC_Result_Data){
 				sprintf(write_bf,"%d\r\n",LogBuf.CumQuty);
 				ret = f_write_retry(&fp, write_bf, strlen(write_bf));
 				if (ret != FR_OK) {
-				    printf("Write failed: %d\n", ret);
+//				    printf("Write failed: %d\n", ret);
 				    f_close(&fp);
 				    return 1;
 				}
@@ -544,7 +350,7 @@ int SDCard_Write_log(GPS_Data GGA_Result_Data, GPS_Data RMC_Result_Data){
         ret = f_close(&fp);
         if(ret != FR_OK)
         {
-        	printf("f_close fail:%d\r\n", ret);
+//        	printf("f_close fail:%d\r\n", ret);
           return 1;
         }else{
         	sprintf(Tx_Buffer,"Main.t0.txt=\"SDCard write success！\"\xff\xff\xff");
@@ -552,7 +358,7 @@ int SDCard_Write_log(GPS_Data GGA_Result_Data, GPS_Data RMC_Result_Data){
         }
 				break;
     default:
-				printf("错误码: %d\r\n", res);  // 其他错误（如硬件问题）
+//				printf("错误码: %d\r\n", res);  // 其他错误（如硬件问题）
 				break;
     }
 
