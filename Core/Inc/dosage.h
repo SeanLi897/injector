@@ -6,8 +6,6 @@
 #include "AD24C02.h"
 #include "key.h"
 
-
-
 extern uint16_t Dosage_set;
 extern uint16_t Dosage_load;
 extern uint16_t current_TreeNo;

@@ -3,10 +3,10 @@
 ../Core/Src/motor.c:37:6:Motor_Brake	8	static
 ../Core/Src/motor.c:17:6:Motor_init	8	static
 ../Core/Src/motor.c:54:6:PAUSE_chk	24	static
-../Core/Src/motor.c:96:6:motor_Forward_Cycle	8	static
-../Core/Src/motor.c:112:6:motor_Reverse_Cycle	8	static
+../Core/Src/motor.c:95:6:motor_Forward_Cycle	8	static
+../Core/Src/motor.c:111:6:motor_Reverse_Cycle	8	static
 ../Core/Src/motor.c:44:6:Ex_GAS_Cycle	16	static
-../Core/Src/motor.c:120:6:Inject_times	0	static
-../Core/Src/motor.c:127:6:Pump_work	8	static
-../Core/Src/motor.c:135:6:Inject_working	128	static
-../Core/Src/motor.c:190:7:Motor_CRT_CLC	8	static
+../Core/Src/motor.c:119:6:Inject_times	0	static
+../Core/Src/motor.c:126:6:Pump_work	8	static
+../Core/Src/motor.c:134:6:Inject_working	128	static
+../Core/Src/motor.c:191:7:Motor_CRT_CLC	8	static

@@ -45,6 +45,9 @@ void Set_Dosage(){
 		if(waiting_start_timeout){
 			waiting_start_timeout = 0;
 			waiting_start = 0;
+
+			sprintf(Tx_Buffer,"Main.t8.txt=\"\"\xff\xff\xff");
+			USART1_Tx_HMIdata((uint8_t*)Tx_Buffer);
 		}
 
 		//Q_SET按键按下，读取上次保存的剂量值
@@ -63,6 +66,7 @@ void Refresh_counter(){
 	AD24C02_Write2Byte(TOTAL_TREE_ADDRESS,&total_Times);
 	HAL_Delay(10);
 	AD24C02_Write2Byte(CURRENT_TREE_NUMBER,&current_TreeNo);
+	HAL_Delay(10);
 
 	sprintf(Tx_Buffer,"Main.n2.val=%d\xff\xff\xff",total_Times);
 	USART1_Tx_HMIdata((uint8_t*)Tx_Buffer);

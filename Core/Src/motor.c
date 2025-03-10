@@ -70,7 +70,6 @@ void PAUSE_chk(){
 			{
 				sprintf(Tx_Buffer,"Main.t0.txt=\"已暂停\"\xff\xff\xff");
 				USART1_Tx_HMIdata((uint8_t*)Tx_Buffer);
-
 			}
 			pause_show = !pause_show;
 		}
@@ -173,6 +172,8 @@ void Inject_working(void){
 	sprintf(Tx_Buffer,"Main.t0.txt=\"注药结束\"\xff\xff\xff");
 	USART1_Tx_HMIdata((uint8_t*)Tx_Buffer);
 
+
+	sprintf(Tx_Buffer,"Main.t8.txt=\"\"\xff\xff\xff");
 	USART1_Tx_HMIdata((uint8_t*)Tx_Buffer);
 
 	Refresh_counter();

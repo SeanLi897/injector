@@ -2,16 +2,6 @@
 
 #define AD24C02_ADDRESS 0XA0
 
-//void AD24C02_Write2Byte(uint8_t memAddress, uint8_t *data) {
-//    uint8_t buffer[3];
-//    buffer[0] = memAddress;  // 内存地址
-//    buffer[1] = data[0];     // 写入的数据低字节
-//    buffer[2] = data[1];     // 写入的数据高字节
-//
-//    I2C_WriteData( AD24C02_ADDRESS, buffer, 3);
-//
-//}
-
 void AD24C02_Write2Byte(uint8_t memAddress, uint16_t *data) {
     uint8_t buffer[3];
     buffer[0] = memAddress;          // Memory address
@@ -32,14 +22,14 @@ void READOUT_SAVE_DATA(void){
 	HAL_Delay(10);
 	AD24C02_Read2Byte(CURRENT_TREE_NUMBER,&current_TreeNo);
 	HAL_Delay(10);
-//	Refresh_counter();
+
 	sprintf(Tx_Buffer,"Main.n2.val=%d\xff\xff\xff",total_Times);
 	USART1_Tx_HMIdata((uint8_t*)Tx_Buffer);
 
 	sprintf(Tx_Buffer,"Main.n3.val=%d\xff\xff\xff",total_inject_Dosage);
 	USART1_Tx_HMIdata((uint8_t*)Tx_Buffer);
 
-	sprintf(Tx_Buffer,"Main.n1.val=%d\xff\xff\xff",current_TreeNo);
+	sprintf(Tx_Buffer,"Main.t19.txt=\"%04d\"\xff\xff\xff",current_TreeNo);
 	USART1_Tx_HMIdata((uint8_t*)Tx_Buffer);
 }
 

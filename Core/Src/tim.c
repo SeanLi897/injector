@@ -207,8 +207,9 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
 		if((now_time_inject % 10 == 0) && ADC_CONV_cplt){
 			ADC_CONV_cplt = 0;
 			if(page_location == Main_page){
-			refresh_bat_vlt();
-			refresh_gasPrs();
+				refresh_bat_vlt();
+				refresh_gasPrs();
+				HMI_GPSDataRefresh(GPS_GGA_Data,GPS_RMC_Data);
 			}
 		}
 

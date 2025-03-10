@@ -191,7 +191,8 @@ void Format_FileName_Date(char* NameResault,char* time,char* date){
 		strncpy(hh_part, time, 2);
 		int hh = atoi(hh_part);
 		// 格式化输出
-		snprintf(NameResault,12,"%4d%02d%02d", 2000 + yy, mm, dd+((hh+8)/24));
+//		snprintf(NameResault,12,"%4d%02d%02d", 2000 + yy, mm, dd+((hh+8)/24));
+		snprintf(NameResault,12,"%2d%02d%02d", yy, mm, dd+((hh+8)/24));
 //		strncpy(NameResault, Resault, 8);
 }
 
@@ -261,7 +262,7 @@ void FormatLatitude(char* LatitudeStr, char* Latitude, char Lat_dir) {
 
 //海拔数据格式化（-9999.9~99999.9）
 void FormatAltitude(char* AltitudeStr, float Altitude){
-	snprintf(AltitudeStr, 10, "%.1f", Altitude);
+	snprintf(AltitudeStr, 7, "%.1f", Altitude);
 }
 
 int HMI_GPSDataRefresh(GPS_Data GGA_Result_Data, GPS_Data RMC_Result_Data){
@@ -275,7 +276,10 @@ int HMI_GPSDataRefresh(GPS_Data GGA_Result_Data, GPS_Data RMC_Result_Data){
 	if(GGA_data_used == 0){
 			//经度
 			FormatLongitude(Str_buf, GGA_Result_Data.longitude, GGA_Result_Data.lon_dir);
-			snprintf(Tx_Buffer,50,"Main.t14.txt=\"%s\"\xff\xff\xff",Str_buf);
+			if(GGA_Result_Data.fix_status == 1)
+				snprintf(Tx_Buffer,35,"Main.t14.txt=\"%s\"\xff\xff\xff",Str_buf);
+			else
+				snprintf(Tx_Buffer,35,"Main.t14.txt=\"E119°06'\"\xff\xff\xff");
 			USART1_Tx_HMIdata((uint8_t*)Tx_Buffer);
 
 			memset(Str_buf, '\0', sizeof(Str_buf));
@@ -283,7 +287,10 @@ int HMI_GPSDataRefresh(GPS_Data GGA_Result_Data, GPS_Data RMC_Result_Data){
 
 			//纬度
 			FormatLatitude(Str_buf, GGA_Result_Data.latitude, GGA_Result_Data.lat_dir);
-			snprintf(Tx_Buffer,50,"Main.t15.txt=\"%s\"\xff\xff\xff",Str_buf);
+			if(GGA_Result_Data.fix_status == 1)
+				snprintf(Tx_Buffer,35,"Main.t15.txt=\"%s\"\xff\xff\xff",Str_buf);
+			else
+				snprintf(Tx_Buffer,35,"Main.t15.txt=\"N33°36'\"\xff\xff\xff");
 			USART1_Tx_HMIdata((uint8_t*)Tx_Buffer);
 
 			memset(Str_buf, '\0', sizeof(Str_buf));
@@ -291,7 +298,10 @@ int HMI_GPSDataRefresh(GPS_Data GGA_Result_Data, GPS_Data RMC_Result_Data){
 
 			//海拔
 			FormatAltitude(Str_buf, GGA_Result_Data.altitude);
-			snprintf(Tx_Buffer,50,"Main.t17.txt=\"%s\"\xff\xff\xff",Str_buf);
+			if(GGA_Result_Data.fix_status == 1)
+				snprintf(Tx_Buffer,30,"Main.t17.txt=\"%s\"\xff\xff\xff",Str_buf);
+			else
+				snprintf(Tx_Buffer,30,"Main.t17.txt=\"28.0\"\xff\xff\xff");
 			USART1_Tx_HMIdata((uint8_t*)Tx_Buffer);
 
 			memset(Str_buf, '\0', sizeof(Str_buf));
@@ -307,7 +317,10 @@ int HMI_GPSDataRefresh(GPS_Data GGA_Result_Data, GPS_Data RMC_Result_Data){
 
 			Format_GPS_Date(date_buf,RMC_Result_Data.time,RMC_Result_Data.date);
 			Format_GPS_Time(time_buf,RMC_Result_Data.time);
-			snprintf(Tx_Buffer,50,"Main.t4.txt=\"%s  %s\"\xff\xff\xff",date_buf, time_buf);
+			if(GGA_Result_Data.fix_status == 1)
+				snprintf(Tx_Buffer,45,"Main.t4.txt=\"%s  %s\"\xff\xff\xff",date_buf, time_buf);
+			else
+				snprintf(Tx_Buffer,45,"Main.t4.txt=\"2025/01/01  12:00:00\"\xff\xff\xff");
 			USART1_Tx_HMIdata((uint8_t*)Tx_Buffer);
 
 			memset(Str_buf, '\0', sizeof(Str_buf));

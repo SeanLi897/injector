@@ -57,7 +57,7 @@ void Back_to_MainPage(void){
 	sprintf(Tx_Buffer,"Main.n3.val=%d\xff\xff\xff",total_inject_Dosage);
 	USART1_Tx_HMIdata((uint8_t*)Tx_Buffer);
 
-	sprintf(Tx_Buffer,"Main.n1.val=%d\xff\xff\xff",current_TreeNo);
+	sprintf(Tx_Buffer,"Main.t19.txt=\"%04d\"\xff\xff\xff",current_TreeNo);
 	USART1_Tx_HMIdata((uint8_t*)Tx_Buffer);
 }
 
@@ -120,7 +120,7 @@ void Cache_File_List() {
     f_opendir(&dir, "/");
     while(f_readdir(&dir, &fno) == FR_OK && fno.fname[0]) {
         if(!(fno.fattrib & AM_DIR)) {
-            paging.file_list[paging.file_count] = malloc(FF_MAX_LFN);
+            paging.file_list[paging.file_count] = malloc(16);
             strcpy(paging.file_list[paging.file_count], fno.fname);
             paging.file_count++;
         }
@@ -185,7 +185,7 @@ void On_Delete_Key_Pressed(){
 	if(paging.show_prev_more) actual_index -= 1; // 排除"..."行
 
 	// 构造完整路径
-	char full_path[FF_MAX_LFN + 3] = "0:/";
+	char full_path[12 + 3] = "0:/";
 	strcat(full_path, paging.file_list[actual_index]);
 
 	sprintf(Tx_Buffer, "File_M.t7.txt=\"确认删除%s?\"\xff\xff\xff",paging.file_list[actual_index]);
@@ -253,7 +253,7 @@ void sendFile_key_pressed(){
 	if(paging.show_prev_more) actual_index -= 1; // 排除"..."行
 
 	// 构造完整路径
-	char full_path[FF_MAX_LFN + 3] = "0:/";
+	char full_path[12 + 3] = "0:/";
 	strcat(full_path, paging.file_list[actual_index]);
 
 	while(1){

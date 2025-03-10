@@ -33,6 +33,7 @@ extern "C" {
 #include "motor.h"
 #include "adc.h"
 #include "HMI.h"
+#include "dosage.h"
 //#include "GPS.h"
 
 /* USER CODE END Includes */

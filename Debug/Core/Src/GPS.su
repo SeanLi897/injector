@@ -3,8 +3,8 @@
 ../Core/Src/GPS.c:127:6:Format_GPS_Date	72	static
 ../Core/Src/GPS.c:153:6:Format_GPS_Time	48	static
 ../Core/Src/GPS.c:174:6:Format_FileName_Date	56	static
-../Core/Src/GPS.c:199:6:FormatLongitude	32	static
-../Core/Src/GPS.c:231:6:FormatLatitude	32	static
-../Core/Src/GPS.c:263:6:FormatAltitude	16	static
-../Core/Src/GPS.c:267:5:HMI_GPSDataRefresh	136	static
-../Core/Src/GPS.c:321:6:Get_GPS_Date	32	static
+../Core/Src/GPS.c:200:6:FormatLongitude	32	static
+../Core/Src/GPS.c:232:6:FormatLatitude	32	static
+../Core/Src/GPS.c:264:6:FormatAltitude	16	static
+../Core/Src/GPS.c:268:5:HMI_GPSDataRefresh	136	static
+../Core/Src/GPS.c:334:6:Get_GPS_Date	32	static

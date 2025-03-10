@@ -103,9 +103,9 @@ int CSV_sheet_Init(void){
     	Format_FileName_Date(file_name_buf, GPS_RMC_Data.time, GPS_RMC_Data.date);
     }
     else{
-    	sprintf(file_name_buf,"20250101");
+    	sprintf(file_name_buf,"250101");
     }
-    snprintf(USER_FILE_NAME,20,"0:/%s%03d.csv", file_name_buf, File_Num);
+    snprintf(USER_FILE_NAME,20,"0:/%s%02d.csv", file_name_buf, File_Num);
 
     res = check_file_exists(USER_FILE_NAME);
 
@@ -174,9 +174,9 @@ int SDCard_Write_log(GPS_Data GGA_Result_Data, GPS_Data RMC_Result_Data){
     	Format_FileName_Date(file_name_buf, GPS_RMC_Data.time, GPS_RMC_Data.date);
     }
     else{
-    	sprintf(file_name_buf,"20250101");
+    	sprintf(file_name_buf,"250101");
     }
-    snprintf(USER_FILE_NAME,20,"0:/%s%03d.csv", file_name_buf, File_Num);
+    snprintf(USER_FILE_NAME,20,"0:/%s%02d.csv", file_name_buf, File_Num);
 
     res = check_file_exists(USER_FILE_NAME);    //检查文件是否存在
     FRESULT ret = f_open(&fp, USER_FILE_NAME, FA_WRITE | FA_OPEN_APPEND);    //打开文件，若文件不存在则创建新文件，并定位到文件末尾
@@ -213,9 +213,9 @@ int SDCard_Write_log(GPS_Data GGA_Result_Data, GPS_Data RMC_Result_Data){
 				LogBuf.CumQuty = total_Times;
 
 				AD24C02_Write2Byte(CSV_LAST_LINE_ADDRESS, &csv_crt_line_No);
-				printf("\r\n");
+//				printf("\r\n");
 
-				printf("%04d,",LogBuf.No);//第1列：序号 0001
+//				printf("%04d,",LogBuf.No);//第1列：序号 0001
 				sprintf(write_bf,"%4d,",LogBuf.No);
 				ret = f_write_retry(&fp, write_bf, strlen(write_bf));
 				if (ret != FR_OK) {
@@ -223,14 +223,14 @@ int SDCard_Write_log(GPS_Data GGA_Result_Data, GPS_Data RMC_Result_Data){
 				    f_close(&fp);
 				    return 1;
 				}
-				memset(write_bf,'\0',sizeof(write_bf));
+//				memset(write_bf,'\0',sizeof(write_bf));
 
 				if(GGA_Result_Data.fix_status == 1){
-					printf("%s,",LogBuf.Date);//第2列：日期 2025/02/25
+//					printf("%s,",LogBuf.Date);//第2列：日期 2025/02/25
 					sprintf(write_bf,"%s,",LogBuf.Date);//第2列：日期 2025/02/25
 				}
 				else{
-					printf("2025/01/01,");//第2列：日期 2025/01/01
+//					printf("2025/01/01,");//第2列：日期 2025/01/01
 					sprintf(write_bf,"2025/01/01,");//第2列：日期 2025/01/01
 				}
 				ret = f_write_retry(&fp, write_bf, strlen(write_bf));
@@ -239,14 +239,14 @@ int SDCard_Write_log(GPS_Data GGA_Result_Data, GPS_Data RMC_Result_Data){
 				    f_close(&fp);
 				    return 1;
 				}
-				memset(write_bf,'\0',sizeof(write_bf));
+//				memset(write_bf,'\0',sizeof(write_bf));
 
 				if(GGA_Result_Data.fix_status == 1){
-					printf("%s,",LogBuf.Time);//第3列：时间 18:21:21
+//					printf("%s,",LogBuf.Time);//第3列：时间 18:21:21
 					sprintf(write_bf,"%s,",LogBuf.Time);//第3列：时间 18:21:21
 				}
 				else{
-					printf("12:00:00,");//第3列：时间 12:00:00
+//					printf("12:00:00,");//第3列：时间 12:00:00
 					sprintf(write_bf,"12:00:00,");//第3列：时间 12:00:00
 				}
 				ret = f_write_retry(&fp, write_bf, strlen(write_bf));
@@ -255,9 +255,9 @@ int SDCard_Write_log(GPS_Data GGA_Result_Data, GPS_Data RMC_Result_Data){
 				    f_close(&fp);
 				    return 1;
 				}
-				memset(write_bf,'\0',sizeof(write_bf));
+//				memset(write_bf,'\0',sizeof(write_bf));
 
-				printf("%04d,",LogBuf.TreeSN);//第4列：序号 0001
+//				printf("%04d,",LogBuf.TreeSN);//第4列：序号 0001
 				sprintf(write_bf,"%4d,",LogBuf.TreeSN);
 				ret = f_write_retry(&fp, write_bf, strlen(write_bf));
 				if (ret != FR_OK) {
@@ -265,9 +265,9 @@ int SDCard_Write_log(GPS_Data GGA_Result_Data, GPS_Data RMC_Result_Data){
 				    f_close(&fp);
 				    return 1;
 				}
-				memset(write_bf,'\0',sizeof(write_bf));
+//				memset(write_bf,'\0',sizeof(write_bf));
 
-				printf("%d,",LogBuf.TreeDose);//第5列：注射剂量 30
+//				printf("%d,",LogBuf.TreeDose);//第5列：注射剂量 30
 				sprintf(write_bf,"%d,",LogBuf.TreeDose);
 				ret = f_write_retry(&fp, write_bf, strlen(write_bf));
 				if (ret != FR_OK) {
@@ -275,15 +275,15 @@ int SDCard_Write_log(GPS_Data GGA_Result_Data, GPS_Data RMC_Result_Data){
 				    f_close(&fp);
 				    return 1;
 				}
-				memset(write_bf,'\0',sizeof(write_bf));
+//				memset(write_bf,'\0',sizeof(write_bf));
 
 				if(GGA_Result_Data.fix_status == 1){
-					printf("%s,",LogBuf.Lng);//第6列：经度 E118°48'
+//					printf("%s,",LogBuf.Lng);//第6列：经度 E118°48'
 					sprintf(write_bf,"%s,",LogBuf.Lng);//第6列：经度 E118°48'
 				}
 				else{
-					printf("E118°48',");//第6列：经度 E118°48'
-					sprintf(write_bf,"E118°48',");//第6列：经度 E118°48
+//					printf("E118°48',");//第6列：经度 E118°48'
+					sprintf(write_bf,"E119°06',");//第6列：经度 E118°48
 				}
 				ret = f_write_retry(&fp, write_bf, strlen(write_bf));
 				if (ret != FR_OK) {
@@ -291,15 +291,15 @@ int SDCard_Write_log(GPS_Data GGA_Result_Data, GPS_Data RMC_Result_Data){
 				    f_close(&fp);
 				    return 1;
 				}
-				memset(write_bf,'\0',sizeof(write_bf));
+//				memset(write_bf,'\0',sizeof(write_bf));
 
 				if(GGA_Result_Data.fix_status == 1){
-					printf("%s,",LogBuf.Lat);//第7列：纬度 N31°50'
+//					printf("%s,",LogBuf.Lat);//第7列：纬度 N31°50'
 					sprintf(write_bf,"%s,",LogBuf.Lat);//第7列：纬度 N31°50'
 				}
 				else{
-					printf("N31°50',");//第7列：纬度 N31°50'
-					sprintf(write_bf,"N31°50',");//第7列：纬度 N31°50'
+//					printf("N31°50',");//第7列：纬度 N31°50'
+					sprintf(write_bf,"N33°36',");//第7列：纬度 N31°50'
 				}
 				ret = f_write_retry(&fp, write_bf, strlen(write_bf));
 				if (ret != FR_OK) {
@@ -307,15 +307,15 @@ int SDCard_Write_log(GPS_Data GGA_Result_Data, GPS_Data RMC_Result_Data){
 				    f_close(&fp);
 				    return 1;
 				}
-				memset(write_bf,'\0',sizeof(write_bf));
+//				memset(write_bf,'\0',sizeof(write_bf));
 
 				if(GGA_Result_Data.fix_status == 1){
-					printf("%s,",LogBuf.Alt);//第8列：海拔 88.9
+//					printf("%s,",LogBuf.Alt);//第8列：海拔 88.9
 					sprintf(write_bf,"%s,",LogBuf.Alt);//第8列：海拔 88.9
 				}
 				else{
-					printf("88.9,");//第8列：海拔 88.9
-					sprintf(write_bf,"88.9,");//第8列：海拔 88.9
+//					printf("88.9,");//第8列：海拔 88.9
+					sprintf(write_bf,"28.0,");//第8列：海拔 88.9
 				}
 				ret = f_write_retry(&fp, write_bf, strlen(write_bf));
 				if (ret != FR_OK) {
@@ -323,9 +323,9 @@ int SDCard_Write_log(GPS_Data GGA_Result_Data, GPS_Data RMC_Result_Data){
 				    f_close(&fp);
 				    return 1;
 				}
-				memset(write_bf,'\0',sizeof(write_bf));
+//				memset(write_bf,'\0',sizeof(write_bf));
 
-				printf("%d,",LogBuf.CumDose);//第9列，累计剂量 892
+//				printf("%d,",LogBuf.CumDose);//第9列，累计剂量 892
 				sprintf(write_bf,"%d,",LogBuf.CumDose);
 				ret = f_write_retry(&fp, write_bf, strlen(write_bf));
 				if (ret != FR_OK) {
@@ -333,9 +333,9 @@ int SDCard_Write_log(GPS_Data GGA_Result_Data, GPS_Data RMC_Result_Data){
 				    f_close(&fp);
 				    return 1;
 				}
-				memset(write_bf,'\0',sizeof(write_bf));
+//				memset(write_bf,'\0',sizeof(write_bf));
 
-				printf("%d\r\n",LogBuf.CumQuty);//第10列，累计数量 112
+//				printf("%d\r\n",LogBuf.CumQuty);//第10列，累计数量 112
 				sprintf(write_bf,"%d\r\n",LogBuf.CumQuty);
 				ret = f_write_retry(&fp, write_bf, strlen(write_bf));
 				if (ret != FR_OK) {
@@ -353,8 +353,8 @@ int SDCard_Write_log(GPS_Data GGA_Result_Data, GPS_Data RMC_Result_Data){
 //        	printf("f_close fail:%d\r\n", ret);
           return 1;
         }else{
-        	sprintf(Tx_Buffer,"Main.t0.txt=\"SDCard write success！\"\xff\xff\xff");
-        	USART1_Tx_HMIdata((uint8_t*)Tx_Buffer);
+//        	sprintf(Tx_Buffer,"Main.t0.txt=\"SDCard write success！\"\xff\xff\xff");
+//        	USART1_Tx_HMIdata((uint8_t*)Tx_Buffer);
         }
 				break;
     default:
